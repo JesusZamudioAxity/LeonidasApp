@@ -1,0 +1,118 @@
+appium -p 4724 --allow-cors
+Puedes iniciar cualquiera de estos emuladores con este comando desde CMD:
+
+%ANDROID_SDK_ROOT%\emulator\emulator.exe -avd Medium_Phone_API_36.0
+
+
+o
+
+%ANDROID_SDK_ROOT%\emulator\emulator.exe -avd Pixel_3a
+
+
+npx wdio run wdio.conf.js
+
+
+npm run test:app
+
+------
+{
+  "platformName": "Android",
+  "deviceName": "emulator-5554",
+  "automationName": "UiAutomator2",
+  "appPackage": "com.ndzl.emdkmaui",
+  "appActivity": "crc649afbf994b8bd9a32.MainActivity",
+  "noReset": true,
+  "autoGrantPermissions": true
+}
+---
+const { exec } = require('child_process');
+const path = require('path');
+
+const EMULATOR_NAME = 'Pixel_3a';
+const ADB_PATH = `${process.env.ANDROID_SDK_ROOT}\\platform-tools\\adb.exe`;
+const EMULATOR_PATH = `${process.env.ANDROID_SDK_ROOT}\\emulator\\emulator.exe`;
+
+function startEmulator() {
+  console.log('📱 Iniciando emulador...');
+  exec(`"${EMULATOR_PATH}" @${EMULATOR_NAME}`, (err) => {
+    if (err) {
+      console.error('❌ Error al iniciar el emulador:', err);
+    }
+  });
+
+  waitForDeviceOnline();
+}
+
+function waitForDeviceOnline(retries = 0) {
+  exec(`${ADB_PATH} devices`, (err, stdout) => {
+    const deviceOnline = stdout.includes('emulator-5554') && stdout.includes('device');
+    if (deviceOnline) {
+      console.log('✅ Dispositivo conectado a ADB');
+      waitForAndroidBoot();
+    } else {
+      if (retries > 30) {
+        console.error('❌ Timeout esperando conexión del emulador a ADB.');
+        process.exit(1);
+      }
+      console.log('⏳ Esperando que el emulador esté online...');
+      setTimeout(() => waitForDeviceOnline(retries + 1), 4000);
+    }
+  });
+}
+
+function waitForAndroidBoot(retries = 0) {
+  exec(`${ADB_PATH} -s emulator-5554 shell getprop sys.boot_completed`, (err, stdout) => {
+    if (stdout.trim() === '1') {
+      console.log('✅ Android completamente arrancado. Listo para pruebas.');
+      process.exit(0);
+    } else {
+      if (retries > 30) {
+        console.error('❌ Timeout esperando que Android arranque.');
+        process.exit(1);
+      }
+      console.log('⏳ Esperando que Android termine de arrancar...');
+      setTimeout(() => waitForAndroidBoot(retries + 1), 4000);
+    }
+  });
+}
+
+startEmulator();
+
+----
+const { exec } = require('child_process');
+const path = require('path');
+
+const EMULATOR_NAME = 'Pixel_3a'; // cambia si tu emulador se llama distinto
+const ADB_PATH = `${process.env.ANDROID_SDK_ROOT}\\platform-tools\\adb.exe`;
+const EMULATOR_PATH = `${process.env.ANDROID_SDK_ROOT}\\emulator\\emulator.exe`;
+
+function startEmulator() {
+  console.log('📱 Iniciando emulador...');
+
+  const emulatorProcess = exec(`"${EMULATOR_PATH}" @${EMULATOR_NAME}`, (err) => {
+    if (err) {
+      console.error('❌ Error al iniciar el emulador:', err);
+    }
+  });
+
+  waitForDevice();
+}
+
+function waitForDevice(retries = 0) {
+  console.log('⏳ Esperando que el emulador esté listo...');
+
+  exec(`${ADB_PATH} -s emulator-5554 shell getprop sys.boot_completed`, (err, stdout) => {
+    if (stdout.trim() === '1') {
+      console.log('✅ Emulador listo');
+      process.exit(0); // ¡Listo! Salimos del script y sigue npm con los tests
+    } else {
+      if (retries > 20) {
+        console.error('❌ Timeout esperando el emulador.');
+        process.exit(1);
+      }
+      setTimeout(() => waitForDevice(retries + 1), 5000);
+    }
+  });
+}
+
+startEmulator();
