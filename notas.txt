@@ -11,6 +11,7 @@ o
 
 npx wdio run wdio.conf.js
 
+npx wdio run wdio.conf.js --suite all
 
 npm run test:app
 

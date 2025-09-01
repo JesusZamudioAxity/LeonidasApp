@@ -1,29 +1,55 @@
 // utils/uiHelpers.js
 
-/**
- * Hace clic en un botón dentro de un contenedor específico, buscando por texto.
- * @param {string} buttonText - Texto exacto del botón a pulsar.
- */
 async function clickButtonInContainer(buttonText) {
-    const container = await $("//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup");
-    const buttons = await container.$$("//android.widget.Button");
+    // Buscamos directamente todos los botones en la pantalla
+    const buttons = await $$("//android.widget.Button");
+
+    let found = false;
 
     for (const button of buttons) {
         const text = await button.getText();
-        if (text.trim() === buttonText) {
+        if (text.trim().toLowerCase() === buttonText.trim().toLowerCase()) {
             await button.click();
-            console.log(`✅ Clic en botón: ${buttonText}`);
-            return;
+            console.log(`✅ Clic en botón: "${text}"`);
+            found = true;
+            break;
         }
     }
 
-     // Assert que se encontró el botón
-    expect(found).toBe(true, `⚠️ Botón con texto "${buttonText}" no fue encontrado.`);
-
     if (!found) {
-        console.warn(`⚠️ Botón con texto "${buttonText}" no encontrado.`);
+        throw new Error(`❌ Botón con texto "${buttonText}" no fue encontrado.`);
     }
 }
+
+
+/**
+ * Ingresa texto en un elemento de tipo EditText (o cualquier input)
+ * @param {WebdriverIO.Element|string} selectorOrElement - Elemento o selector
+ * @param {string} text - Texto a ingresar
+ */
+async function enterText(selectorOrElement, text) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    await waitForElementToBeVisible(element); // ✅ ahora con await
+    await element.clearValue();               // ✅ ya es un WebdriverIO element
+    await element.setValue(text);
+}
+
+async function waitForElementToBeVisible(selectorOrElement, timeout = 5000) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    await element.waitForDisplayed({ timeout });
+}
+
+async function waitForErrorMessage(selector, timeout = 5000) {
+    const element = await $(selector);
+    await element.waitForDisplayed({ timeout });
+}
+
 
 /**
  * Devuelve un array con los textos de todos los botones dentro del contenedor.
@@ -85,4 +111,7 @@ module.exports = {
      scrollWithTouchAction,
     scrollIntoView,
     scrollToText,
+    waitForElementToBeVisible,
+    enterText,
+    waitForErrorMessage
 };
