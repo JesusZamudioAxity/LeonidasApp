@@ -33,13 +33,14 @@ buscarButtonSelector = 'android=new UiSelector().text("BUSCAR")';
 
       it('Buscar Elemento', async () => {
           await scrollToText("Acerca de");
-          await driver.back();
+           await browser.pause(1500);  //Solo para observar
+        //  await driver.back();
 
       });
 
       it('Clic en botón "Tracking"', async () => {
-          await scrollToText("Tracking de ventanilla");
-           await browser.pause(1500);  //Solo para observar
+          await scrollToText("Tracking de ventanilla");      
+          await browser.pause(1500);  //Solo para observar
           await clickButtonInContainer("Tracking de ventanilla");
           await browser.pause(1500); // Solo para observar
           await enterText(_editTextSelector, '1'); // Número de tracking
