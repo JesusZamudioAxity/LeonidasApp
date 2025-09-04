@@ -1,35 +1,38 @@
+// test/auth/login.test.js
 const LoginPage = require('../../pageObjects/login.page');
+const TestDataManager = require('../../utils/testDataManager');
+
 const {
-   waitForErrorMessage,
-   waitForElementToBeVisible
+  waitForErrorMessage,assertElementVisibleAndExists
 } = require('../../utils/uiHelpers');
- _errorMessageSelector = 'android=new UiSelector().text("La contraseña o el usuario ingresado son incorrectos. Por favor, verifica e intenta de nuevo.")';
- _menuSelector = 'android=new UiSelector().text("Menú")';
+
+const _menuSelector = 'android=new UiSelector().text("Menú")';
+const loginData = TestDataManager.getLoginData();
 
 describe('Flujos de inicio de sesión Leonidas', () => {
-      it('Login incorrecto', async () => {
-        await LoginPage.enterUsername('admin');
-        await LoginPage.enterPassword('admin');
-        await LoginPage.clickLogin();
-        await browser.pause(7000); // Solo para observar
-        await waitForErrorMessage(_errorMessageSelector); // ⬅️ AQUÍ va la espera
-        const text = await LoginPage.getErrorMessageText();
-        console.log("Esto es text" + text);
-        expect(text).toBe('La contraseña o el usuario ingresado son incorrectos. Por favor, verifica e intenta de nuevo.');
-    });
+     console.log('🧪 testDataManager:', require('../../utils/testDataManager'));
 
 
-    it('Login', async () => {
-         await LoginPage.enterUsername('admin');
-         await LoginPage.enterPassword('admin-qa');
-         await LoginPage.clickLogin();
-         await waitForElementToBeVisible(_menuSelector, 10000);
-         const menu = await $(_menuSelector);
-         await expect(menu).toBeDisplayed();  // ✔️ Verifica que esté visible
-         await expect(menu).toExist();        // ✔️ Verifica que exista en el DOM
+  it('Login incorrecto', async () => {
+    const { username, password } = loginData.invalidUser;
 
-     });
+    await LoginPage.enterUsername(username);
+    await LoginPage.enterPassword(password);
+    await LoginPage.clickLogin();
 
+    await waitForErrorMessage(LoginPage._errorMessageSelector); 
+    const text = await LoginPage.getErrorMessageText();
+    console.log("Mensaje de error recibido: " + text);
+    expect(text).toBe(LoginPage.expectedErrorMessage); // Compara contra el mensaje esperado
+  });
 
+  it('Login correcto', async () => {
+    const { username, password } = loginData.validUser;
 
+    await LoginPage.enterUsername(username);
+    await LoginPage.enterPassword(password);
+    await LoginPage.clickLogin();
+
+    await assertElementVisibleAndExists(_menuSelector, 10000);
+  });
 });
