@@ -1,36 +1,113 @@
 // utils/uiHelpers.js
+const _moreOptionsSelector = 'android=new UiSelector().description("More options")';
+const _scannerSelector = 'android=new UiSelector().resourceId("com.ndzl.emdkmaui:id/title").text("SCANNER")';
+const _editTextSelector = 'android=new UiSelector().className("android.widget.EditText")';
+const _fakeScanSelector = 'android=new UiSelector().text("Fake Scan")';
 
-/**
- * Hace clic en un botón dentro de un contenedor específico, buscando por texto.
- * @param {string} buttonText - Texto exacto del botón a pulsar.
- */
+
 async function clickButtonInContainer(buttonText) {
-    const container = await $("//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup");
-    const buttons = await container.$$("//android.widget.Button");
+    // Buscamos directamente todos los botones en la pantalla
+    const buttons = await $$("//android.widget.Button");
+
+    let found = false;
 
     for (const button of buttons) {
         const text = await button.getText();
-        if (text.trim() === buttonText) {
+        if (text.trim().toLowerCase() === buttonText.trim().toLowerCase()) {
             await button.click();
-            console.log(`✅ Clic en botón: ${buttonText}`);
-            return;
+            console.log(`✅ Clic en botón: "${text}"`);
+            found = true;
+            break;
         }
     }
 
-     // Assert que se encontró el botón
-    expect(found).toBe(true, `⚠️ Botón con texto "${buttonText}" no fue encontrado.`);
-
     if (!found) {
-        console.warn(`⚠️ Botón con texto "${buttonText}" no encontrado.`);
+        throw new Error(`❌ Botón con texto "${buttonText}" no fue encontrado.`);
     }
 }
+
+async function clickElementByText(textToFind) {
+    const elements = await $$('//android.widget.TextView');
+    
+    for (const el of elements) {
+        const text = await el.getText();
+        if (text.trim().toLowerCase() === textToFind.trim().toLowerCase()) {
+            await el.click();
+            console.log(`✅ Clic en elemento con texto: "${text}"`);
+            return;
+        }
+    }
+    throw new Error(`❌ Elemento con texto "${textToFind}" no fue encontrado.`);
+}
+
+
+/**
+ * Ingresa texto en un elemento de tipo EditText (o cualquier input)
+ * @param {WebdriverIO.Element|string} selectorOrElement - Elemento o selector
+ * @param {string} text - Texto a ingresar
+ */
+async function enterText(selectorOrElement, text) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    await waitForElementToBeVisible(element); // ✅ ahora con await
+    await element.clearValue();               // ✅ ya es un WebdriverIO element
+    await element.setValue(text);
+}
+
+async function waitForElementToBeVisible(selectorOrElement, timeout = 5000) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    await element.waitForDisplayed({ timeout });
+}
+
+/**
+ * Espera que un elemento esté visible, luego verifica que esté desplegado y exista.
+ * @param {string|WebdriverIO.Element} selectorOrElement - Selector o elemento
+ * @param {number} timeout - Tiempo máximo de espera (ms)
+ */
+async function assertElementVisibleAndExists(selectorOrElement, timeout = 5000) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    await waitForElementToBeVisible(element, timeout);
+    await expect(element).toBeDisplayed();
+    await expect(element).toExist();
+}
+
+/**
+ * Realiza el flujo completo de escaneo simulado (Fake Scan)
+ * @param {string} text Texto a insertar en el campo de escaneo
+ */
+async function FakeScan(text) {
+    console.log("Esto es el QR: " +text)
+    await $(_moreOptionsSelector).click();
+    await waitForElementToBeVisible(_scannerSelector, 3000);
+    await clickElementByText("SCANNER");
+    await waitForElementToBeVisible(_editTextSelector, 3000);
+    await enterText(_editTextSelector, text);
+    await waitForElementToBeVisible(_fakeScanSelector, 3000); 
+    await clickButtonInContainer("Fake Scan");
+}
+
+
+async function waitForErrorMessage(selector, timeout = 5000) {
+    const element = await $(selector);
+    await element.waitForDisplayed({ timeout });
+}
+
 
 /**
  * Devuelve un array con los textos de todos los botones dentro del contenedor.
  */
 async function listButtonTextsInContainer() {
     const container = await $("//android.widget.ScrollView/android.view.ViewGroup/android.view.ViewGroup");
-    const buttons = await container.$$("//android.widget.Button");
+     const buttons = await $("//android.widget.Button");
+
 
     const texts = [];
     for (const button of buttons) {
@@ -81,8 +158,14 @@ async function scrollToText(text) {
 
 module.exports = {
     clickButtonInContainer,
+    clickElementByText,
+    FakeScan,
     listButtonTextsInContainer,
-     scrollWithTouchAction,
+    scrollWithTouchAction,
     scrollIntoView,
     scrollToText,
+    waitForElementToBeVisible,
+    assertElementVisibleAndExists,
+    enterText,
+    waitForErrorMessage
 };
