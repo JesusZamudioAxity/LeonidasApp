@@ -10,6 +10,22 @@ exports.config = {
         '@wdio/appium-service': 'debug',  // logs detallados del servicio Appium
         webdriver: 'info',                 // logs del WebDriver
     },
+
+    suites: {
+        login: [
+        './test/auth/login.test.js'
+        ],
+        tracking: [
+        './test/trackingVentanilla/tracking.test.js'
+        ],
+        all: [
+        './test/auth/login.test.js',
+        './test/trackingVentanilla/tracking.test.js'
+        ]
+    },
+
+  // ⚠️ Asegúrate de esto si necesitas ejecución en orden
+  
     
     runner: 'local',
     port: 4723,
@@ -51,15 +67,16 @@ exports.config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    //maxInstances: 10,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
+       // maxInstances: 1,
         platformName: "Android",
-        "appium:deviceName": "emulator-5554",
+        "appium:deviceName": "emulator-5556",
         "appium:platformVersion": "16",
         "appium:automationName": "UiAutomator2",
         "appium:appPackage": "com.ndzl.emdkmaui",
