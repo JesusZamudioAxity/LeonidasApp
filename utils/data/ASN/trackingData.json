@@ -1,0 +1,20 @@
+{
+  "validItem": [
+    {
+      "trackingNumber": "29",
+      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509209|<]"
+    },
+    {
+      "trackingNumber": "35",
+      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509210|<]"
+    },
+    {
+      "trackingNumber": "36",
+      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509211|<]"
+    }
+  ],
+   "invalidItem":{
+    "trackingNumber": "0",
+    "scanCode": "[>|p65715el000|q100|v003435|s13659806|ar0509200|<]"
+  }
+}

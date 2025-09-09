@@ -4,7 +4,6 @@ const _scannerSelector = 'android=new UiSelector().resourceId("com.ndzl.emdkmaui
 const _editTextSelector = 'android=new UiSelector().className("android.widget.EditText")';
 const _fakeScanSelector = 'android=new UiSelector().text("Fake Scan")';
 
-
 async function clickButtonInContainer(buttonText) {
     // Buscamos directamente todos los botones en la pantalla
     const buttons = await $$("//android.widget.Button");
@@ -84,7 +83,7 @@ async function assertElementVisibleAndExists(selectorOrElement, timeout = 5000) 
  * @param {string} text Texto a insertar en el campo de escaneo
  */
 async function FakeScan(text) {
-    console.log("Esto es el QR: " +text)
+    console.log("Esto es el QR: " +text);
     await $(_moreOptionsSelector).click();
     await waitForElementToBeVisible(_scannerSelector, 3000);
     await clickElementByText("SCANNER");
@@ -100,6 +99,141 @@ async function waitForErrorMessage(selector, timeout = 5000) {
     await element.waitForDisplayed({ timeout });
 }
 
+async function waitForWebViewContext(timeout = 10000) {
+  const start = Date.now();
+  let contexts = [];
+
+  while ((Date.now() - start) < timeout) {
+    contexts = await driver.getContexts();
+    if (contexts.some(c => c.toLowerCase().includes('webview'))) {
+      return contexts;
+    }
+    await new Promise(r => setTimeout(r, 500)); // espera medio segundo
+  }
+  throw new Error('No se encontró contexto WebView después de ' + timeout + 'ms');
+}
+
+async function FakeScan2(text) {
+ console.log("Esto es el QR: " + text);
+
+           const moreOptions = await $('~More options');
+await moreOptions.click();
+ // Pausa para inspeccionar en el dispositivo si quieres
+console.log(await element.getAttribute('enabled'));
+console.log(await element.getAttribute('clickable'));
+console.log(await element.getAttribute('focusable'));
+console.log(await element.getAttribute('displayed'));
+
+    try {
+        await element.click();
+        console.log('Click ejecutado con éxito');
+    } catch (error) {
+        console.error('Error al hacer click:', error.message);
+    }
+
+try {
+  const contexts = await waitForWebViewContext();
+  console.log('Contexts con WebView:', contexts);
+  await driver.switchContext(contexts.find(c => c.toLowerCase().includes('webview')));
+  // Ahora puedes interactuar con el WebView
+} catch (error) {
+  console.error(error.message);
+}
+
+try {
+    const contexts = await driver.getContexts();
+    console.log("Contexts disponibles:", contexts);
+    await driver.switchContext('NATIVE_APP');
+
+    await browser.pause(1000); // pausa antes de buscar
+
+  //  const element = await $('~More options');
+    await element.waitForExist({ timeout: 5000 });
+    console.log('Elemento "More options" existe');
+
+    const visible = await element.isDisplayed();
+    console.log('Visible:', visible);
+
+    if (visible) {
+      await element.click();
+      console.log('Click en "More options" ejecutado');
+    } else {
+      console.log('El elemento no está visible');
+    }
+
+  } catch (error) {
+    console.error('Error tratando de clickear "More options":', error);
+  }
+
+
+
+    // const element = await $('~More options');
+
+    try {
+        await element.waitForExist({ timeout: 5000 });
+        console.log('Elemento existe');
+
+        const visible = await element.isDisplayed();
+        const enabled = await element.isEnabled();
+        const clickable = await element.getAttribute('clickable');
+
+        console.log('Visible:', visible);
+        console.log('Enabled:', enabled);
+        console.log('Clickable:', clickable);
+
+        // Oculta el teclado si está abierto
+        try {
+            await driver.hideKeyboard();
+        } catch (err) {
+            console.log('No hay teclado visible');
+        }
+
+        await browser.pause(500); // Esperar medio segundo
+        await element.click();
+        console.log('Click ejecutado');
+
+    } catch (error) {
+        console.error('Error con el elemento:', error.message);
+    }
+
+    await $(_moreOptionsSelector).click();
+    await waitForElementToBeVisible(_scannerSelector, 3000);
+    await clickElementByText("SCANNER");
+    await waitForElementToBeVisible(_editTextSelector, 3000);
+    await enterText(_editTextSelector, text);
+    await waitForElementToBeVisible(_fakeScanSelector, 3000); 
+    await clickButtonInContainer("Fake Scan");
+}
+
+async function extractLabelValues() {
+    const etiquetas = ["ASN:"];
+    const datos = {};
+
+    for (const etiqueta of etiquetas) {
+        try {
+            const labelElement = await $(`//android.widget.TextView[@text="${etiqueta}"]`);
+            const valorElement = await labelElement.$(`../following-sibling::android.widget.TextView[1]`);
+            
+            let valorTexto = "";
+            if (await valorElement.isExisting()) {
+                valorTexto = await valorElement.getText();
+            } else {
+                const todos = await $$('android.widget.TextView');
+                const index = await todos.findIndex(async (el) => (await el.getText()) === etiqueta);
+                if (index >= 0 && todos[index + 1]) {
+                    valorTexto = await todos[index + 1].getText();
+                }
+            }
+
+            datos[etiqueta.replace(":", "")] = valorTexto;
+        } catch (err) {
+            console.warn(`No se encontró el valor para ${etiqueta}: ${err.message}`);
+            datos[etiqueta.replace(":", "")] = null;
+        }
+    }
+
+    return datos;
+}
 
 /**
  * Devuelve un array con los textos de todos los botones dentro del contenedor.
@@ -160,6 +294,9 @@ module.exports = {
     clickButtonInContainer,
     clickElementByText,
     FakeScan,
+    waitForWebViewContext,
+    FakeScan2,
+    extractLabelValues,
     listButtonTextsInContainer,
     scrollWithTouchAction,
     scrollIntoView,
