@@ -16,11 +16,14 @@ exports.config = {
         './test/auth/login.test.js'
         ],
         tracking: [
-        './test/trackingVentanilla/tracking.test.js'
+        './test/ASN/tracking.test.js'
+        ],
+        ASN: [
+        './test/ASN/cerrarASN.test.js'
         ],
         all: [
         './test/auth/login.test.js',
-        './test/trackingVentanilla/tracking.test.js'
+        './test/ASN/tracking.test.js'
         ]
     },
 
@@ -29,6 +32,7 @@ exports.config = {
     
     runner: 'local',
     port: 4723,
+    path: '/', 
     //
     // ==================
     // Specify Test Files
@@ -132,7 +136,9 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['appium'],
+    services: [
+        'appium'
+    ],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber

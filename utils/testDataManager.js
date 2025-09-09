@@ -8,7 +8,12 @@ class TestDataManager {
   }
 
   static getTrackingData() {
-    const filePath = path.join(__dirname, 'data/trackingData.json');
+    const filePath = path.join(__dirname, 'data/ASN/trackingData.json');
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  }
+
+    static getcerrarASNData() {
+    const filePath = path.join(__dirname, 'data/ASN/cerrarASN.json');
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   }
 }

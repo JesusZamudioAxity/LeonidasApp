@@ -1,4 +1,4 @@
-const TrackingPage = require('../../pageObjects/tracking.page');
+const TrackingPage = require('../../pageObjects/ASN/tracking.page');
 const TestDataManager = require('../../utils/testDataManager');
 
 const trackingData = TestDataManager.getTrackingData();
@@ -26,43 +26,44 @@ _warningItemtSelector = 'android=new UiSelector().text("Ingresa un número de it
           await scrollToText("Tracking de ventanilla");      
           await browser.pause(1500); // Solo para observar
           
+          //  await clickButtonInContainer("Tracking de ventanilla");
+          //  await browser.pause(1500); // Solo para observar
+          //  await enterText(_editTextSelector, trackingNumber);
+          //  await clickButtonInContainer("BUSCAR");
+          //  await waitForElementToBeVisible(_itemLabelSelector, 10000);
+          await TrackingPage.iniciarFlujoTracking(trackingNumber); 
+
+
+          console.log("Esto es el QR1: " + scanCode)
+          await FakeScan(scanCode);
+          await waitForElementToBeVisible(_itemLabelSelector, 10000);
+          console.log("Esto es el QR2: " +scanCode)
+          await FakeScan(scanCode);   
+          assertElementVisibleAndExists(_viewGroupSelector, 10000);
+          await waitForElementToBeVisible(_itemLabelSelector, 10000);
+          console.log("Esto es el QR3: " +scanCode)
+          await FakeScan(scanCode);
+          // await TrackingPage.realizarEscaneos();
+
+          //  assertElementVisibleAndExists(_siguienteButtonSelector, 10000);
+          //  await clickButtonInContainer("SIGUIENTE");
+          //  await waitForElementToBeVisible(_regresarAlMenuSelector, 10000);
+          //  await clickButtonInContainer("REGRESAR AL MENÚ");
+          await TrackingPage.continuarYSalir(); 
+     });
+
+
+       it('Tracking item invalido', async () => {
+          const { trackingNumber } = trackingData.invalidItem;
+           await scrollToText("Tracking de ventanilla");      
+           await browser.pause(1500); // Solo para observar
+
            await clickButtonInContainer("Tracking de ventanilla");
            await browser.pause(1500); // Solo para observar
            await enterText(_editTextSelector, trackingNumber);
            await clickButtonInContainer("BUSCAR");
-           await waitForElementToBeVisible(_itemLabelSelector, 10000);
-       // await TrackingPage.iniciarFlujoTracking(trackingNumber); 
-
-
-          console.log("Esto es el QR1: " + scanCode)
-          FakeScan(scanCode);
-          await waitForElementToBeVisible(_itemLabelSelector, 10000);
-          console.log("Esto es el QR2: " +scanCode)
-          FakeScan(scanCode);   
-          assertElementVisibleAndExists(_viewGroupSelector, 10000);
-          await waitForElementToBeVisible(_itemLabelSelector, 10000);
-          console.log("Esto es el QR3: " +scanCode)
-          FakeScan(scanCode);
-
-           assertElementVisibleAndExists(_siguienteButtonSelector, 10000);
-           await clickButtonInContainer("SIGUIENTE");
-           await waitForElementToBeVisible(_regresarAlMenuSelector, 10000);
-           await clickButtonInContainer("REGRESAR AL MENÚ");
-         //    await TrackingPage.continuarYSalir(); 
-     });
-
-
-      it('Tracking item invalido', async () => {
-         const { trackingNumber } = trackingData.invalidItem;
-          await scrollToText("Tracking de ventanilla");      
-          await browser.pause(1500); // Solo para observar
-
-          await clickButtonInContainer("Tracking de ventanilla");
-          await browser.pause(1500); // Solo para observar
-          await enterText(_editTextSelector, trackingNumber);
-          await clickButtonInContainer("BUSCAR");
-          assertElementVisibleAndExists(_warningItemtSelector, 10000);
-       });  
+           assertElementVisibleAndExists(_warningItemtSelector, 10000);
+        });  
  });
 
 

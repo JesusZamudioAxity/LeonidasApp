@@ -1,11 +1,10 @@
-// pageObjects/tracking.page.js
 const {
   clickButtonInContainer,
   enterText,
   waitForElementToBeVisible,
   FakeScan,
   assertElementVisibleAndExists,
-} = require('../utils/uiHelpers');
+} = require('../../utils/uiHelpers');
 
 class TrackingPage {
   _editTextSelector = 'android=new UiSelector().className("android.widget.EditText").instance(0)';
@@ -23,15 +22,14 @@ class TrackingPage {
   }
 
   async realizarEscaneos(codigo) {
-     FakeScan(codigo);
-     console.log("paaso el primer face")
+     await FakeScan(codigo);
      await waitForElementToBeVisible(this._itemLabelSelector, 10000);
-      console.log("paaso el 1 espera")
-     FakeScan(codigo); 
-      console.log("paaso el 2 face")
+     console.log("paaso el 1 espera")
+     await FakeScan(codigo); 
+     console.log("paaso el 2 face")
      assertElementVisibleAndExists(this._viewGroupSelector, 10000);
      await waitForElementToBeVisible(this._itemLabelSelector, 10000);
-     FakeScan(codigo);
+     await FakeScan(codigo);
       console.log("paaso el 3 face")
   }
 
