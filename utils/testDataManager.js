@@ -27,12 +27,22 @@ class TestDataManager {
   return data;
 }
 
-    static getcerrarASNData() {
+  static getcerrarASNData() {
     const filePath = path.join(__dirname, 'data/ASN/cerrarASN.json');
       const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')); // <-- Aquí defines "data"
     // Normaliza QR a array
     if (!Array.isArray(data.QR)) {
       data.QR = [data.QR];
+    }
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  }
+
+  static getmoverRANdata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/moverRAN.json');
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')); // <-- Aquí defines "data"
+    // Normaliza QR a array
+    if (!Array.isArray(data.items)) {
+      data.items = [data.items];
     }
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   }

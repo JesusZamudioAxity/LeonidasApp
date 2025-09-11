@@ -21,6 +21,9 @@ exports.config = {
         ASN: [
         './test/ASN/cerrarASN.test.js'
         ],
+        almacen:[
+         './test/almacenamiento/moverRAN.test.js'   
+        ],
         all: [
         './test/auth/login.test.js',
         './test/ASN/tracking.test.js'
@@ -137,7 +140,7 @@ exports.config = {
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
     services: [
-        'appium'
+      //  'appium'
     ],
 
     // Framework you want to run your specs with.
