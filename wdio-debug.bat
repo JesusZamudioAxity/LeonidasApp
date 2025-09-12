@@ -1,2 +1,2 @@
 @echo off
-npx wdio run wdio.conf.js --suite ASN
+npx wdio run wdio.conf.js --suite almacen

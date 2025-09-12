@@ -21,6 +21,9 @@ exports.config = {
         ASN: [
         './test/ASN/cerrarASN.test.js'
         ],
+        almacen:[
+         './test/almacenamiento/moverRAN.test.js'   
+        ],
         all: [
         './test/auth/login.test.js',
         './test/ASN/tracking.test.js'
