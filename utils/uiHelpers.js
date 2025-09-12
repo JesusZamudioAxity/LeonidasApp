@@ -3,6 +3,25 @@ const _moreOptionsSelector = 'android=new UiSelector().description("More options
 const _scannerSelector = 'android=new UiSelector().resourceId("com.ndzl.emdkmaui:id/title").text("SCANNER")';
 const _editTextSelector = 'android=new UiSelector().className("android.widget.EditText")';
 const _fakeScanSelector = 'android=new UiSelector().text("Fake Scan")';
+const _menuSelector = 'android=new UiSelector().text("Menú")';
+const appPackage = 'com.ndzl.emdkmaui';
+
+async function restartApp() {
+   try {
+        await driver.terminateApp(appPackage);
+         await driver.resetApp(); // 🔁 Este debería funcionar
+      } catch (e) {
+        console.warn(`No se pudo terminar la app: ${e.message}`);
+      }
+
+      try {
+        await driver.activateApp(appPackage);
+         await $(_menuSelector).waitForDisplayed({ timeout: 10000 });
+      } catch (e) {
+        console.warn(`No se pudo reiniciar la app: ${e.message}`);
+      }
+}
+
 
 async function clickButtonInContainer(buttonText) {
     // Buscamos directamente todos los botones en la pantalla
@@ -55,7 +74,7 @@ async function enterText(selectorOrElement, text) {
     await element.setValue(text);
 }
 
-async function waitForElementToBeVisible(selectorOrElement, timeout = 5000) {
+async function waitForElementToBeVisible(selectorOrElement, timeout = 10000) {
     const element = typeof selectorOrElement === 'string'
         ? await $(selectorOrElement)
         : selectorOrElement;
@@ -91,6 +110,20 @@ async function FakeScan(text) {
     await enterText(_editTextSelector, text);
     await waitForElementToBeVisible(_fakeScanSelector, 3000); 
     await clickButtonInContainer("Fake Scan");
+}
+
+async function waitForRanDataToLoad(timeout = 5000) {
+    const container = await $('android.view.ViewGroup');
+
+    await browser.waitUntil(async () => {
+        const textViews = await container.$$('android.widget.TextView');
+        return textViews.length >= 6;
+    }, {
+        timeout,
+        timeoutMsg: '❌ Los datos de RAN, Parte y QTY no se visualizaron completamente en pantalla'
+    });
+
+    console.log('✅ Datos visualizados: RAN, Parte, QTY.');
 }
 
 
@@ -235,6 +268,31 @@ async function extractLabelValues() {
     return datos;
 }
 
+async function assertToastMessageContains(partialText, timeout = 10000) {
+    const selector = `android=new UiSelector().textContains("${partialText}")`;
+    const toast = await $(selector);
+
+    await toast.waitForDisplayed({ timeout });
+    expect(await toast.isDisplayed()).toBe(true);
+}
+
+async function assertToastTextExists(partialText, timeout = 10000) {
+    const interval = 500;
+    const attempts = Math.ceil(timeout / interval);
+
+    for (let i = 0; i < attempts; i++) {
+        const pageSource = await driver.getPageSource();
+        if (pageSource.includes(partialText)) {
+            console.log(`✅ Toast con texto "${partialText}" detectado.`);
+            return;
+        }
+        await driver.pause(interval);
+    }
+
+    throw new Error(`❌ Toast con texto "${partialText}" no fue detectado después de ${timeout}ms.`);
+}
+
+
 /**
  * Devuelve un array con los textos de todos los botones dentro del contenedor.
  */
@@ -291,12 +349,15 @@ async function scrollToText(text) {
 }
 
 module.exports = {
+    restartApp,
     clickButtonInContainer,
     clickElementByText,
     FakeScan,
     waitForWebViewContext,
     FakeScan2,
     extractLabelValues,
+    assertToastMessageContains,
+    assertToastTextExists,
     listButtonTextsInContainer,
     scrollWithTouchAction,
     scrollIntoView,
