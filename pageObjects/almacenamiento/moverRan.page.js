@@ -83,26 +83,34 @@ async waitForScanResult({ timeout = 10000, interval = 500 } = {}) {
         await this.goToMoverRANScreen();
 
         await FakeScan(qr);
-        
-        // await waitForElementToBeVisible(this._msgRANOK);
-        // await assertToastTextExists("Ran encontrado");
-
-        //  await waitForElementToBeVisible(this._msgRANNG);
-        // await assertToastTextExists("El ran leido no se encontró");
-         const result = await this.waitForScanResult(); // Detecta "OK" o "NG"
+        const result = await this.waitForScanResult(); // Detecta "OK" o "NG"
 
         if (result.result === 'NG') {
-            console.warn('⚠️ Terminando flujo: el RAN no se encontró.');
-            return; // O podrías lanzar un error si deseas que falle el test
+            const message = "El ran leído no se encontró";
+            console.warn(`❌ ${message}`);
+            return { success: false, reason: 'RAN no encontrado', message };
         }
-
 
         await FakeScan(location);
 
-        await this.waitForSuccessOrDialog();
-        console.log();
+        const resultAfterMove = await this.waitForSuccessOrDialog();
 
+        if (resultAfterMove.type === 'toast') {
+            const message = "Se movió el RAN";
+            console.log(`✅ ${message}`);
+            return { success: true, message };
+        }
+
+        if (resultAfterMove.type === 'dialog') {
+            const message = resultAfterMove.message;
+            console.warn(`❌ ${message}`);
+            return { success: false, reason: 'Error de diálogo', message };
+        }
+
+        const message = 'Resultado desconocido';
+        return { success: false, reason: 'Desconocido', message };
     }
+
 
     async goToMoverRANScreen() {
         const isAlreadyOnScreen = await $(this._lblMoverRan).isDisplayed().catch(() => false);
