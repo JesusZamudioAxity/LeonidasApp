@@ -1,0 +1,14 @@
+{
+  "validItem": {
+    "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509210|<]",
+    "location": "!l?trimcriticoaa"
+  },
+  "invalidItem": {
+    "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509290|<]",
+    "location": "!l?ZI02G"
+  },
+  "locationinvalidItem": {
+    "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509201|<]",
+    "location": "!l?ZI02G"
+  }
+}
