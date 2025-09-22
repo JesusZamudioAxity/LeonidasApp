@@ -14,6 +14,11 @@ class LoginPage {
   get loginButton() { return $(this._loginButtonSelector); }
   get errorMessage() { return $(this._errorMessageSelector); }
 
+    // Nuevo método para esperar el campo username
+  async waitForUsernameField() {
+    await $(this._usernameSelector).waitForDisplayed({ timeout: 10000 });
+  }
+
   async enterUsername(username) {
     await this.usernameField.setValue(username);
   }
