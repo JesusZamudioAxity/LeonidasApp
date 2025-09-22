@@ -12,9 +12,11 @@ exports.config = {
         ran:['./test/almacenamiento/moverRAN.test.js'],
         critico:['./test/almacenamiento/almacenamientoCritico.test.js'],
         all: [
-         './test/ASN/tracking.test.js',   
-        './test/ASN/cerrarASN.test.js',
-        './test/almacenamiento/moverRAN.test.js'  
+          './test/auth/login.test.js',
+          './test/ASN/tracking.test.js',   
+          './test/ASN/cerrarASN.test.js',
+          './test/almacenamiento/moverRAN.test.js',
+          './test/almacenamiento/almacenamientoCritico.test.js'  
         ]
     },
 

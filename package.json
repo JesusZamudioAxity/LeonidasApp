@@ -9,7 +9,13 @@
     "start:emulator": "startEmulador.js",
     "test:mobile": "npx wdio run wdio.conf.js",
     "test:app1": "start \"\" npm run start:emulator1 && adb wait-for-device && timeout /t 30 && npm run test:mobile",
-    "test:app": "npm run start:emulator && npm run test:mobile"
+    "test:app": "npm run start:emulator && npm run test:mobile",
+
+    "test:login": "npx wdio run wdio.conf.js --spec ./test/auth/login.test.js",
+    "test:tracking": "npx wdio run wdio.conf.js --spec ./test/ASN/tracking.test.js",
+    "test:ASN": "npx wdio run wdio.conf.js --spec ./test/ASN/cerrarASN.test.js",
+    "test:ran": "npx wdio run wdio.conf.js --spec ./test/almacenamiento/moverRAN.test.js",
+    "test:critico": "npx wdio run wdio.conf.js --spec ./test/almacenamiento/almacenamientoCritico.test.js"
   },
   "keywords": [],
   "author": "",

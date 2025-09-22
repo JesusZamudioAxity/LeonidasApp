@@ -80,8 +80,26 @@ y cambiar los datos de la carpeta data para la ejecución correcta
 
 ✅ Lanza las pruebas con WDIO:
 
-🚀 npx wdio run wdio.conf.js --suite login 
-🚀 npx wdio run wdio.conf.js --suite tracking
-🚀 npx wdio run wdio.conf.js --suite ASN
+### 1. Ejecutar un archivo específico con `--spec`
+
+Ejecuta un test scripts en `package.json`:
+
+🚀 `npm run test:login`  
+🚀 `npm run test:tracking`  
+🚀 `npm run test:ASN`  
+🚀 `npm run test:ran`  
+🚀 `npm run test:critico`  
+---
+
+### 2. Ejecutar un grupo de tests (suite) con `--suite`
+
+Si tienes definidas suites en `wdio.conf.js`, puedes ejecutar grupos de tests así:
+
+🚀 `npx wdio run wdio.conf.js --suite login`  
+🚀 `npx wdio run wdio.conf.js --suite tracking`  
+🚀 `npx wdio run wdio.conf.js --suite ASN`  
+🚀 `npx wdio run wdio.conf.js --suite ran`  
+🚀 `npx wdio run wdio.conf.js --suite critico`  
+
  
  //npx wdio run wdio.conf.js
