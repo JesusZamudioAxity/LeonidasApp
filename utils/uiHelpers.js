@@ -106,11 +106,57 @@ async function FakeScan(text) {
     await $(_moreOptionsSelector).click();
     await waitForElementToBeVisible(_scannerSelector, 3000);
     await clickElementByText("SCANNER");
-    await waitForElementToBeVisible(_editTextSelector, 3000);
+    await waitForElementToBeVisible(_editTextSelector, 5000);
     await enterText(_editTextSelector, text);
-    await waitForElementToBeVisible(_fakeScanSelector, 3000); 
+    await waitForElementToBeVisible(_fakeScanSelector, 5000); 
     await clickButtonInContainer("Fake Scan");
 }
+
+/**
+ * Intenta hacer 'back' hasta que se encuentre un elemento visible.
+ * Hace como máximo `maxTries` intentos, con un delay entre cada uno.
+ * 
+ * @param {string} selector - Selector del elemento a buscar (Android UiSelector, XPath, CSS, etc.).
+ * @param {number} maxTries - Número máximo de intentos (default: 5).
+ * @param {number} waitBetweenTries - Espera entre intentos en ms (default: 1000).
+ * @param {number} timeoutPerTry - Timeout de espera para el elemento por intento (default: 1000).
+ * @returns {WebdriverIO.Element} - El elemento encontrado.
+ * @throws Error si no se encuentra tras los intentos.
+ */
+async function backUntilElementFound(selector, maxTries = 5, waitBetweenTries = 1000, timeoutPerTry = 1000) {
+  let attempt = 0;
+
+  while (attempt < maxTries) {
+    console.log(`🔁 Intento ${attempt + 1}/${maxTries}: buscando el selector '${selector}'`);
+
+    const el = await $(selector);
+
+    const isDisplayed = await el.isDisplayed().catch(() => false);
+
+    if (isDisplayed) {
+      console.log('✅ Elemento encontrado.');
+      return el;
+    }
+
+    // Si no se encontró, hacemos back y esperamos
+    await driver.back();
+    await browser.pause(waitBetweenTries);
+
+    // Intentamos esperar a que aparezca de nuevo (por si ya está)
+    try {
+      await el.waitForDisplayed({ timeout: timeoutPerTry });
+      console.log('✅ Elemento apareció después del back.');
+      return el;
+    } catch (e) {
+      // No apareció, seguimos al siguiente intento
+    }
+
+    attempt++;
+  }
+
+  throw new Error(`❌ Elemento '${selector}' no encontrado tras ${maxTries} intentos de back.`);
+}
+
 
 async function waitForRanDataToLoad(timeout = 5000) {
     const container = await $('android.view.ViewGroup');
@@ -145,6 +191,55 @@ async function waitForWebViewContext(timeout = 10000) {
   }
   throw new Error('No se encontró contexto WebView después de ' + timeout + 'ms');
 }
+
+/**
+ * Espera el resultado del escaneo verificando dos elementos posibles (OK o NG),
+ * y valida los textos de toast correspondientes.
+ *
+ * @param {Object} params
+ * @param {string} params.selectorOK - Selector del elemento OK
+ * @param {string} params.toastTextOK - Texto del toast cuando es OK
+ * @param {string} params.selectorNG - Selector del elemento NG
+ * @param {string} params.toastTextNG - Texto del toast cuando es NG
+ * @param {number} [params.timeout=10000] - Tiempo total de espera
+ * @param {number} [params.interval=500] - Intervalo entre reintentos
+ * @returns {Promise<{result: string}>}
+ */
+async function waitForScanResult({
+    selectorOK,
+    toastTextOK,
+    selectorNG,
+    toastTextNG,
+    timeout = 10000,
+    interval = 500
+} = {}) {
+    const attempts = Math.ceil(timeout / interval);
+
+    for (let i = 0; i < attempts; i++) {
+        const okElement = await $(selectorOK);
+        const isOKVisible = await okElement.isDisplayed().catch(() => false);
+
+        if (isOKVisible) {
+            console.log('✅ RAN encontrado (OK)');
+            await assertToastTextExists(toastTextOK, 8000);
+            return { result: 'OK' };
+        }
+
+        const ngElement = await $(selectorNG);
+        const isNGVisible = await ngElement.isDisplayed().catch(() => false);
+
+        if (isNGVisible) {
+            console.warn('❌ RAN no encontrado (NG)');
+            await assertToastTextExists(toastTextNG, 8000);
+            return { result: 'NG' };
+        }
+
+        await driver.pause(interval);
+    }
+
+    throw new Error("❌ No se detectó ni OK ni NG después del tiempo de espera.");
+}
+
 
 async function FakeScan2(text) {
  console.log("Esto es el QR: " + text);
@@ -354,6 +449,8 @@ module.exports = {
     clickElementByText,
     FakeScan,
     waitForWebViewContext,
+    waitForScanResult,
+    backUntilElementFound,
     FakeScan2,
     extractLabelValues,
     assertToastMessageContains,

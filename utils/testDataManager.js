@@ -16,16 +16,16 @@ class TestDataManager {
   }
 
   static getTrackingData() {
-  const filePath = path.join(__dirname, 'data/ASN/trackingData.json');
-  const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')); // <-- Aquí defines "data"
+    const filePath = path.join(__dirname, 'data/ASN/trackingData.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')); // <-- Aquí defines "data"
 
-  // Normaliza validItem como array
-  if (!Array.isArray(data.validItem)) {
-    data.validItem = [data.validItem];
+    // Normaliza validItem como array
+    if (!Array.isArray(data.validItem)) {
+      data.validItem = [data.validItem];
+    }
+
+    return data;
   }
-
-  return data;
-}
 
   static getcerrarASNData() {
     const filePath = path.join(__dirname, 'data/ASN/cerrarASN.json');
@@ -46,6 +46,14 @@ class TestDataManager {
     }
     return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
   }
+  
+  static getalmCriticodata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/almcritico.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return data;
+  }
+
+
 }
 
 module.exports = TestDataManager;
