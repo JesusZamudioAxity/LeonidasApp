@@ -41,6 +41,9 @@ class TrackingPage {
     await assertElementVisibleAndExists(this._siguienteButtonSelector, 10000);
     await clickButtonInContainer("SIGUIENTE");
     await waitForElementToBeVisible(this._regresarAlMenuSelector, 10000);
+    const regMenuElem = await $(this._regresarAlMenuSelector);
+    await expect(regMenuElem).toBeDisplayed();
+    await expect(regMenuElem).toExist();
     await clickButtonInContainer("REGRESAR AL MENÚ");
   }
 }
