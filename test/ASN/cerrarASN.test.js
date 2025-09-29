@@ -1,14 +1,22 @@
-const CerrarASN = require ('../../pageObjects/ASN/cerrasASN.page');
+const CerrarASN = require('../../pageObjects/ASN/cerrasASN.page');
 const TestDataManager = require('../../utils/testDataManager');
+const { startVideoRecording, stopVideoRecordingAndSave } = require('../../utils/uiHelpers');
 
 const cerrarASN = TestDataManager.getcerrarASNData();
 
- describe('ASN', () => {
-     for (const { scanCode } of cerrarASN.QR) {
-         it(`Flujo de ASN para QR: ${scanCode}`, async () => {
-             console.log("Usando QR:", scanCode);
-             await CerrarASN.confirmarASN(scanCode);
-         });
-     }
+describe('📦 Cierre de ASN', () => {
+  for (const { scanCode } of cerrarASN.QR) {
+    it(`✅ Flujo de cierre de ASN para QR: ${scanCode}`, async () => {
+      const videoName = `CerrarASN_${scanCode}`;
+      await startVideoRecording(); // ⬅️ INICIO VIDEO
 
- });
+      try {
+        console.log("🔍 Usando QR:", scanCode);
+        await CerrarASN.confirmarASN(scanCode);
+
+      } finally {
+        await stopVideoRecordingAndSave(videoName); // ⬅️ FIN VIDEO
+      }
+    });
+  }
+});

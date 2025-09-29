@@ -4,7 +4,7 @@
      scrollToText,
      waitForElementToBeVisible,
      FakeScan,
-     assertToastTextExists
+     waitForScanResult,
  } = require('../../utils/uiHelpers');
 
 class AlmacenamientoRAN{
@@ -15,40 +15,9 @@ class AlmacenamientoRAN{
     _lblMoverRan = 'android=new UiSelector().text("Mover RAN")';
     _msgRANOK = 'android=new UiSelector().text("OK")';
     _msgRANNG = 'android=new UiSelector().text("NG")';
+    _txtRANPass="Ran encontrado";
+    _txtRANFail="El ran leido no se encontró";
     _mensajeDialogo = 'android=new UiSelector().resourceId("android:id/message")';
-
-async waitForScanResult({ timeout = 10000, interval = 500 } = {}) {
-    const attempts = Math.ceil(timeout / interval);
-
-    for (let i = 0; i < attempts; i++) {
-        // Detecta el "OK"
-        const okElement = await $(this._msgRANOK);
-        const isOKVisible = await okElement.isDisplayed().catch(() => false);
-
-        if (isOKVisible) {
-            console.log('✅ RAN encontrado (OK)');
-            await assertToastTextExists("Ran encontrado", 3000);
-            return { result: 'OK' };
-        }
-
-        // Detecta el "NG"
-        const ngElement = await $(this._msgRANNG);
-        const isNGVisible = await ngElement.isDisplayed().catch(() => false);
-
-        if (isNGVisible) {
-            console.warn('❌ RAN no encontrado (NG)');
-            await assertToastTextExists("El ran leido no se encontró", 3000);
-            return { result: 'NG' };
-        }
-
-        await driver.pause(interval);
-    }
-
-    throw new Error("❌ No se detectó ni OK ni NG después del tiempo de espera.");
-}
-
-
-
 
     async waitForSuccessOrDialog({ toastText = "Se movió el RAN", timeout = 10000, interval = 500 } = {}) {
         const attempts = Math.ceil(timeout / interval);
@@ -83,7 +52,11 @@ async waitForScanResult({ timeout = 10000, interval = 500 } = {}) {
         await this.goToMoverRANScreen();
 
         await FakeScan(qr);
-        const result = await this.waitForScanResult(); // Detecta "OK" o "NG"
+        const result = await waitForScanResult({ 
+            selectorOK: this._msgRANOK,
+            toastTextOK: this._txtRANPass,
+            selectorNG: this._msgRANNG,
+            toastTextNG: this._txtRANFail}); // Detecta "OK" o "NG"
 
         if (result.result === 'NG') {
             const message = "El ran leído no se encontró";
@@ -132,23 +105,3 @@ async waitForScanResult({ timeout = 10000, interval = 500 } = {}) {
 }
 
 module.exports = new AlmacenamientoRAN();
-
-
-
-
-//  async moverRAN (qr, location){
-//         await clickElementByText('Almacén');
-//         await waitForElementToBeVisible(_almacenamientoSelector);
-//         await clickButtonInContainer('Almacenamiento');
-//         await waitForElementToBeVisible(_almacenarSelector);
-//         await clickButtonInContainer('Almacenar');
-//         await waitForElementToBeVisible(_lblTipoAlmacenar);
-//         await scrollToText('Mover RAN')
-         
-//         await waitForElementToBeVisible(_lblMoverRan );
-//         await FakeScan("[>|p65715el000|q20|v003435|s13659806|ar0509208|<]");
-//         await waitForElementToBeVisible(_msgRANOK);
-//         await assertToastTextExists("Ran encontrado");
-//         await FakeScan("!l?ZI02H");
-//         await assertToastTextExists("Se movió el RAN");       
-//     }

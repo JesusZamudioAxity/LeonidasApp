@@ -53,7 +53,23 @@ class TestDataManager {
     return data;
   }
 
+  static getalmNormaldata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/almnormal.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return data;
+  }
 
+  static getalmMixedata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/almmixed.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return data;
+  }
+
+  static getalmStringerdata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/almstringer.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return data;
+  }
 }
 
 module.exports = TestDataManager;

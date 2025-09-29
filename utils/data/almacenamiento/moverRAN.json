@@ -2,22 +2,22 @@
   "items": [
      {
       "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509200|<]",
-      "location": "!l?s2a4",
+      "location": "!l?ZI01H",
       "shouldPass": true
     },
     {
       "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509202|<]",
-      "location": "!l?s2a4"
-      
+      "location": "!l?s2a8",
+      "shouldPass": false
     },
     {
-      "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509209|<]",
+      "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509290|<]",
       "location": "!l?s2a4",
-      "shouldPass": true
+      "shouldPass": false
     },
     {
       "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509210|<]",
-      "location": "!l?s2a4"
+      "location": "!l?ZI01G"
       
     }
   ]

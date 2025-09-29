@@ -27,7 +27,7 @@ class AlmacenamientoCritico{
     _txtlocationPass="Se almacenó el RAN:";
     _txtlocationFail="La ubicación leida no coincide con la ubicación siguiente";
 
-     async moverRAN(qr, location) {
+     async critico(qr, location) {
          await this.goToCritico();
 
          await FakeScan(qr);
@@ -39,9 +39,7 @@ class AlmacenamientoCritico{
             toastTextNG: this._txtNoRegistros});  //Detecta "OK" o "NG"
 
           if (ScanQR.result === 'NG') {
-              const message = "El ran leído no se encontró";
-              console.warn(`❌ ${message}`);
-              return { success: false, reason: 'RAN no encontrado', message };
+              return { success: false, reason: 'No hay registros que coincidan con la búsqueda.'};
           }
         await assertElementVisibleAndExists(this._lblUbicacionParcial);
 
@@ -55,9 +53,14 @@ class AlmacenamientoCritico{
 
        console.log(Scanlocation);
 
-       const btnBuscar = await backUntilElementFound(this._btnBuscar);
+        await backUntilElementFound(this._btnBuscar);
 
-      //  expect(await btnBuscar.isDisplayed()).toBe(true);
+         if (Scanlocation.result === 'NG') {
+              return { success: false, reason: 'La ubicación leida no coincide con la ubicación siguiente' };
+             
+          }else{
+            return { success: true, reason: 'Se almacenó el RAN:' };
+          }
 
      }
 
