@@ -1,10 +1,38 @@
 // utils/uiHelpers.js
 const _moreOptionsSelector = 'android=new UiSelector().description("More options")';
+const _linkScanner='android=new UiSelector().text("SCANNER")';
 const _scannerSelector = 'android=new UiSelector().resourceId("com.ndzl.emdkmaui:id/title").text("SCANNER")';
 const _editTextSelector = 'android=new UiSelector().className("android.widget.EditText")';
 const _fakeScanSelector = 'android=new UiSelector().text("Fake Scan")';
 const _menuSelector = 'android=new UiSelector().text("Menú")';
 const appPackage = 'com.ndzl.emdkmaui';
+const fs = require('fs');
+const path = require('path');
+
+function sanitizeFilename(filename) {
+    // Elimina o reemplaza caracteres inválidos para nombres de archivo en Windows
+    return filename.replace(/[<>:"/\\|?*\[\]]/g, '_');
+}
+
+async function startVideoRecording() {
+    await driver.startRecordingScreen();
+}
+
+async function stopVideoRecordingAndSave(filename = 'test-video') {
+    const videoBase64 = await driver.stopRecordingScreen();
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+    const sanitizedFilename = sanitizeFilename(filename);
+    const videosDir = path.resolve(__dirname, '../../videos');
+    
+    if (!fs.existsSync(videosDir)) {
+        fs.mkdirSync(videosDir);
+    }
+
+    const filePath = path.join(videosDir, `${sanitizedFilename}_${timestamp}.mp4`);
+    fs.writeFileSync(filePath, videoBase64, 'base64');
+    console.log(`🎥 Video guardado en: ${filePath}`);
+}
 
 async function restartApp() {
    try {
@@ -21,6 +49,7 @@ async function restartApp() {
         console.warn(`No se pudo reiniciar la app: ${e.message}`);
       }
 }
+
 
 
 async function clickButtonInContainer(buttonText) {
@@ -96,6 +125,29 @@ async function assertElementVisibleAndExists(selectorOrElement, timeout = 5000) 
     await expect(element).toBeDisplayed();
     await expect(element).toExist();
 }
+
+/**
+ * Espera hasta 5 segundos para ver si un elemento existe y está visible.
+ * Devuelve true si lo encuentra, false si no aparece en ese tiempo.
+ * 
+ * @param {string|WebdriverIO.Element} selectorOrElement - Selector o elemento
+ * @param {number} timeout - Tiempo máximo de espera en ms (default: 5000)
+ * @returns {Promise<boolean>} - true si el elemento existe y está visible, false si no
+ */
+async function waitForElementAndReturnFlag(selectorOrElement, timeout = 5000) {
+    const element = typeof selectorOrElement === 'string'
+        ? await $(selectorOrElement)
+        : selectorOrElement;
+
+    try {
+        await element.waitForDisplayed({ timeout });
+        return await element.isDisplayed();
+    } catch (error) {
+        // Si el elemento no se muestra dentro del timeout, devolvemos false
+        return false;
+    }
+}
+
 
 /**
  * Realiza el flujo completo de escaneo simulado (Fake Scan)
@@ -178,6 +230,94 @@ async function waitForErrorMessage(selector, timeout = 5000) {
     await element.waitForDisplayed({ timeout });
 }
 
+async function waitForScanDataToBePresent(selectors, timeout = 10000, interval = 500) {
+    const start = Date.now();
+
+    while (Date.now() - start < timeout) {
+        let allDataPresent = true;
+
+        for (const selector of selectors) {
+            const element = await $(selector);
+            const isDisplayed = await element.isDisplayed().catch(() => false);
+            
+            if (!isDisplayed) {
+                allDataPresent = false;
+                console.warn(`⛔ Elemento ${selector} no está visible`);
+                break;
+            }
+
+            const text = await element.getText().catch(() => '');
+            if (!text || text.trim() === '') {
+                allDataPresent = false;
+                console.warn(`⚠️ Elemento ${selector} está vacío`);
+                break;
+            }
+
+            console.log(`📦 Elemento ${selector} contiene: "${text.trim()}"`);
+        }
+
+        if (allDataPresent) {
+            console.log("✅ Todos los datos del escaneo están presentes y no están vacíos");
+            return true;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, interval));
+    }
+
+    console.warn("⚠️ Timeout esperando los datos del escaneo no vacíos");
+    return false;
+}
+
+async function waitForScanResultOrFail({ selectors, selectorFail, timeout = 10000, interval = 500 }) {
+    const start = Date.now();
+
+    while (Date.now() - start < timeout) {
+        let allDataPresent = true;
+
+        // Verificar si apareció el mensaje de error o el módulo de fallo
+        if (selectorFail) {
+            const failElement = await $(selectorFail);
+            const failVisible = await failElement.isDisplayed().catch(() => false);
+            if (failVisible) {
+                console.error("❌ Fallo detectado: se mostró el mensaje de error.");
+                return false;
+            }
+        }
+
+        // Verificar si todos los datos están presentes y no vacíos
+        for (const selector of selectors) {
+            const element = await $(selector);
+            const isDisplayed = await element.isDisplayed().catch(() => false);
+            
+            if (!isDisplayed) {
+                allDataPresent = false;
+                console.warn(`⛔ Elemento ${selector} no está visible`);
+                break;
+            }
+
+            const text = await element.getText().catch(() => '');
+            if (!text || text.trim() === '') {
+                allDataPresent = false;
+                console.warn(`⚠️ Elemento ${selector} está vacío`);
+                break;
+            }
+
+            console.log(`📦 Elemento ${selector} contiene: "${text.trim()}"`);
+        }
+
+        if (allDataPresent) {
+            console.log("✅ Todos los datos del escaneo están presentes y no vacíos");
+            return true;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, interval));
+    }
+
+    console.warn("⚠️ Timeout esperando los datos del escaneo o la aparición del mensaje de error");
+    return false;
+}
+
+
 async function waitForWebViewContext(timeout = 10000) {
   const start = Date.now();
   let contexts = [];
@@ -211,7 +351,8 @@ async function waitForScanResult({
     selectorNG,
     toastTextNG,
     timeout = 10000,
-    interval = 500
+    interval = 500,
+    checkToasts = true // 👈 nuevo parámetro opcional
 } = {}) {
     const attempts = Math.ceil(timeout / interval);
 
@@ -221,7 +362,9 @@ async function waitForScanResult({
 
         if (isOKVisible) {
             console.log('✅ RAN encontrado (OK)');
-            await assertToastTextExists(toastTextOK, 8000);
+            if (checkToasts) {
+                await assertToastTextExists(toastTextOK, 8000);
+            }
             return { result: 'OK' };
         }
 
@@ -230,7 +373,9 @@ async function waitForScanResult({
 
         if (isNGVisible) {
             console.warn('❌ RAN no encontrado (NG)');
-            await assertToastTextExists(toastTextNG, 8000);
+            if (checkToasts) {
+                await assertToastTextExists(toastTextNG, 8000);
+            }
             return { result: 'NG' };
         }
 
@@ -240,96 +385,71 @@ async function waitForScanResult({
     throw new Error("❌ No se detectó ni OK ni NG después del tiempo de espera.");
 }
 
+/**
+ * Espera el resultado del escaneo verificando un único elemento de mensaje
+ * y validando el texto para determinar si es OK o NG.
+ *
+ * @param {Object} params
+ * @param {string} params.messageSelector - Selector del mensaje (compartido para OK y NG)
+ * @param {string} params.expectedOKText - Texto que indica estado OK
+ * @param {string} params.toastTextOK - Texto del toast cuando es OK
+ * @param {string} params.expectedNGText - Texto que indica estado NG
+ * @param {string} params.toastTextNG - Texto del toast cuando es NG
+ * @param {number} [params.timeout=10000] - Tiempo total de espera
+ * @param {number} [params.interval=500] - Intervalo entre reintentos
+ * @param {boolean} [params.checkToasts=true] - Si debe validar toasts
+ * @returns {Promise<{result: string}>}
+ */
+async function waitForScanResultwarning({
+    messageSelector,
+    expectedOKText,
+    toastTextOK,
+    expectedNGText,
+    toastTextNG,
+    timeout = 10000,
+    interval = 500,
+    checkToasts = true
+} = {}) {
+    const attempts = Math.ceil(timeout / interval);
 
-async function FakeScan2(text) {
- console.log("Esto es el QR: " + text);
+    for (let i = 0; i < attempts; i++) {
+        const messageElement = await $(messageSelector);
+        const isDisplayed = await messageElement.isDisplayed().catch(() => false);
 
-           const moreOptions = await $('~More options');
-await moreOptions.click();
- // Pausa para inspeccionar en el dispositivo si quieres
-console.log(await element.getAttribute('enabled'));
-console.log(await element.getAttribute('clickable'));
-console.log(await element.getAttribute('focusable'));
-console.log(await element.getAttribute('displayed'));
+        if (isDisplayed) {
+            const text = await messageElement.getText();
 
-    try {
-        await element.click();
-        console.log('Click ejecutado con éxito');
-    } catch (error) {
-        console.error('Error al hacer click:', error.message);
-    }
+            if (text.includes(expectedOKText)) {
+                console.log('✅ Resultado OK detectado');
+                if (checkToasts) {
+                    await assertToastTextExists(toastTextOK, 8000);
+                }
+                return { result: 'OK' };
+            }
 
-try {
-  const contexts = await waitForWebViewContext();
-  console.log('Contexts con WebView:', contexts);
-  await driver.switchContext(contexts.find(c => c.toLowerCase().includes('webview')));
-  // Ahora puedes interactuar con el WebView
-} catch (error) {
-  console.error(error.message);
-}
-
-try {
-    const contexts = await driver.getContexts();
-    console.log("Contexts disponibles:", contexts);
-    await driver.switchContext('NATIVE_APP');
-
-    await browser.pause(1000); // pausa antes de buscar
-
-  //  const element = await $('~More options');
-    await element.waitForExist({ timeout: 5000 });
-    console.log('Elemento "More options" existe');
-
-    const visible = await element.isDisplayed();
-    console.log('Visible:', visible);
-
-    if (visible) {
-      await element.click();
-      console.log('Click en "More options" ejecutado');
-    } else {
-      console.log('El elemento no está visible');
-    }
-
-  } catch (error) {
-    console.error('Error tratando de clickear "More options":', error);
-  }
-
-
-
-    // const element = await $('~More options');
-
-    try {
-        await element.waitForExist({ timeout: 5000 });
-        console.log('Elemento existe');
-
-        const visible = await element.isDisplayed();
-        const enabled = await element.isEnabled();
-        const clickable = await element.getAttribute('clickable');
-
-        console.log('Visible:', visible);
-        console.log('Enabled:', enabled);
-        console.log('Clickable:', clickable);
-
-        // Oculta el teclado si está abierto
-        try {
-            await driver.hideKeyboard();
-        } catch (err) {
-            console.log('No hay teclado visible');
+            if (text.includes(expectedNGText)) {
+                console.warn('❌ Resultado NG detectado');
+                if (checkToasts) {
+                    await assertToastTextExists(toastTextNG, 8000);
+                }
+                return { result: 'NG' };
+            }
         }
 
-        await browser.pause(500); // Esperar medio segundo
-        await element.click();
-        console.log('Click ejecutado');
-
-    } catch (error) {
-        console.error('Error con el elemento:', error.message);
+        await driver.pause(interval);
     }
 
-    await $(_moreOptionsSelector).click();
-    await waitForElementToBeVisible(_scannerSelector, 3000);
-    await clickElementByText("SCANNER");
-    await waitForElementToBeVisible(_editTextSelector, 3000);
+    throw new Error("❌ No se detectó ni OK ni NG después del tiempo de espera.");
+}
+
+
+
+async function FakeScan2(text) {
+    console.log("Esto es el QR: " +text);
+    await $(_linkScanner).click();
+    await waitForElementToBeVisible(_editTextSelector, 5000);
     await enterText(_editTextSelector, text);
-    await waitForElementToBeVisible(_fakeScanSelector, 3000); 
+    await waitForElementToBeVisible(_fakeScanSelector, 5000); 
     await clickButtonInContainer("Fake Scan");
 }
 
@@ -445,12 +565,18 @@ async function scrollToText(text) {
 
 module.exports = {
     restartApp,
+    startVideoRecording,
+    stopVideoRecordingAndSave,
     clickButtonInContainer,
     clickElementByText,
     FakeScan,
     waitForWebViewContext,
     waitForScanResult,
+    waitForScanResultwarning,
     backUntilElementFound,
+    waitForScanDataToBePresent,
+    waitForScanResultOrFail,
+    waitForElementAndReturnFlag,
     FakeScan2,
     extractLabelValues,
     assertToastMessageContains,
