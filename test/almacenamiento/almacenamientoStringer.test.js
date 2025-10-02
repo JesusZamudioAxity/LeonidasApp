@@ -9,7 +9,7 @@ describe('📦 Test Almacenamiento stringer', () => {
     it('✅ Almacenamiento stringer (datos válidos)', async () => {
         const { qr, location } = stringer.validItem;
         console.log("🧪 Parámetros válidos:", qr, location);
-        await startVideoRecording(); // ⬅️ INICIO VIDEO
+        await startVideoRecording('almacenamiento/stringer'); // ⬅️ INICIO VIDEO
         try {
             await AlmacenamientoStringer.goToStringer();
             const result = await AlmacenamientoStringer.stringer(qr, location);
@@ -24,7 +24,7 @@ describe('📦 Test Almacenamiento stringer', () => {
     it('❌ Alm Normal - Alerta por ubicación inválida', async () => {
         const { qr, location } = stringer.locationinvalidItem;
         console.log("🧪 Ubicación inválida:", qr, location);
-        await startVideoRecording(); // ⬅️ INICIO VIDEO
+        await startVideoRecording('almacenamiento/stringer'); // ⬅️ INICIO VIDEO
         try {
             await AlmacenamientoStringer.goToStringer();
             const result = await AlmacenamientoStringer.stringer(qr, location);
@@ -39,7 +39,7 @@ describe('📦 Test Almacenamiento stringer', () => {
     it('❌ Alm Normal - Alerta por QR inválido', async () => {
         const { qr, location } = stringer.invalidItem;
         console.log("🧪 QR inválido:", qr, location);
-        await startVideoRecording(); // ⬅️ INICIO VIDEO
+        await startVideoRecording('almacenamiento/stringer'); // ⬅️ INICIO VIDEO
         try {
             await AlmacenamientoStringer.goToStringer();
             const result = await AlmacenamientoStringer.stringer(qr, location);

@@ -9,7 +9,7 @@ describe('📦 Test Almacenamiento Mixed', () => {
     it('✅ Almacenamiento Mixed (datos válidos)', async () => {
         const { qr, location } = mixed.validItem;
         console.log("🧪 Parámetros válidos:", qr, location);
-        await startVideoRecording();
+        await startVideoRecording('almacenamiento/mixed');
 
         try {
             const result = await AlmacenamientoMixed.mixed(qr, location);
@@ -26,7 +26,7 @@ describe('📦 Test Almacenamiento Mixed', () => {
         const { qr, location } = mixed.locationinvalidItem;
         console.log("🧪 Ubicación inválida:", qr, location);
 
-        await startVideoRecording();
+        await startVideoRecording('almacenamiento/mixed');
 
         try {
             const result = await AlmacenamientoMixed.mixed(qr, location);
@@ -43,7 +43,7 @@ describe('📦 Test Almacenamiento Mixed', () => {
         const { qr, location } = mixed.invalidItem;
         console.log("🧪 QR inválido:", qr, location);
 
-        await startVideoRecording();
+        await startVideoRecording('almacenamiento/mixed');
 
         try {
             const result = await AlmacenamientoMixed.mixed(qr, location);

@@ -25,7 +25,7 @@ describe('📦 Tracking ventanilla', () => {
   for (const { trackingNumber, scanCode } of trackingData.validItem) {
     it(`✅ Flujo Tracking ventanilla para tracking #${trackingNumber}`, async () => {
       const videoName = `TrackingVentanilla_Valid_${trackingNumber}`;
-      await startVideoRecording(); // ⬅️ INICIO VIDEO
+      await startVideoRecording('ASN/tracking'); // ⬅️ INICIO VIDEO
 
       try {
         await scrollToText("Tracking de ventanilla");
@@ -52,7 +52,7 @@ describe('📦 Tracking ventanilla', () => {
 
   it('❌ Tracking item inválido', async () => {
     const videoName = `TrackingVentanilla_Invalido`;
-    await startVideoRecording(); // ⬅️ INICIO VIDEO
+    await startVideoRecording('ASN/tracking'); // ⬅️ INICIO VIDEO
 
     try {
       const { trackingNumber } = trackingData.invalidItem;

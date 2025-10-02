@@ -10,7 +10,7 @@ describe('📦 Test de Mover RAN', () => {
 
     it(`Caso #${index + 1} - ${expectedToPass ? '✅ Debe pasar' : '❌ Debe fallar'}`, async () => {
       const videoName = `MoverRAN_Caso_${index + 1}_${expectedToPass ? 'DebePasar' : 'DebeFallar'}`;
-      await startVideoRecording(); // ⬅️ INICIO VIDEO
+      await startVideoRecording('almacenamiento/moverRan'); // ⬅️ INICIO VIDEO
 
       try {
         const result = await AlmacenamientoRAN.moverRAN(ran.qr, ran.location);

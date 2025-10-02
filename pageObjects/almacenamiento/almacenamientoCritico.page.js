@@ -19,8 +19,8 @@ class AlmacenamientoCritico{
     _lblRAN= 'android = new UiSelector().text("RAN")';
     _msgRANOK = 'android=new UiSelector().text("OK")';
     _msgRANNG = 'android=new UiSelector().text("NG")';
-    _msgRanCorrecto= 'android=new UiSelector().text("Lectura correcta")';
-    _msgRANIncorrecto = 'android=new UiSelector().text("No hay registros que coincidan con la búsqueda.")';
+    _msgRanCorrecto= 'android=new UiSelector().textContains("Lectura correcta")';
+    _msgRANIncorrecto = 'android=new UiSelector().textContains("No hay registros que coincidan con la búsqueda.")';
     _lblUbicacionParcial = 'android=new UiSelector().textStartsWith("Próxima ubicación:")';
     _txtCorrecta = "Lectura correcta";
     _txtNoRegistros="No hay registros que coincidan con la búsqueda.";

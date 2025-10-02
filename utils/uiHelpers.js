@@ -8,31 +8,44 @@ const _menuSelector = 'android=new UiSelector().text("Menú")';
 const appPackage = 'com.ndzl.emdkmaui';
 const fs = require('fs');
 const path = require('path');
+let _currentModulePath = null;  // e.j. "almacenamiento/almacenamientoStringer"
 
 function sanitizeFilename(filename) {
     // Elimina o reemplaza caracteres inválidos para nombres de archivo en Windows
     return filename.replace(/[<>:"/\\|?*\[\]]/g, '_');
 }
 
-async function startVideoRecording() {
-    await driver.startRecordingScreen();
+async function startVideoRecording(modulePath = null) {
+  // modulePath podría ser algo como "almacenamiento/almacenamientoStringer" o "ASN/tracking"
+  _currentModulePath = modulePath;
+  await driver.startRecordingScreen();
 }
 
 async function stopVideoRecordingAndSave(filename = 'test-video') {
-    const videoBase64 = await driver.stopRecordingScreen();
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const videoBase64 = await driver.stopRecordingScreen();
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const sanitizedFilename = sanitizeFilename(filename);
 
-    const sanitizedFilename = sanitizeFilename(filename);
-    const videosDir = path.resolve(__dirname, '../../videos');
-    
-    if (!fs.existsSync(videosDir)) {
-        fs.mkdirSync(videosDir);
-    }
+  // determinar subcarpeta para módulo (o default)
+  const moduleFolder = _currentModulePath
+    ? sanitizeFilename(_currentModulePath)
+    : 'default';
 
-    const filePath = path.join(videosDir, `${sanitizedFilename}_${timestamp}.mp4`);
-    fs.writeFileSync(filePath, videoBase64, 'base64');
-    console.log(`🎥 Video guardado en: ${filePath}`);
+  // ruta completa: reports/videos/<moduleFolder>
+  const videosDir = path.resolve(__dirname, `../reports/videos/${moduleFolder}`);
+
+  if (!fs.existsSync(videosDir)) {
+    fs.mkdirSync(videosDir, { recursive: true });
+  }
+
+  const filePath = path.join(videosDir, `${sanitizedFilename}_${timestamp}.mp4`);
+  fs.writeFileSync(filePath, videoBase64, 'base64');
+  console.log(`🎥 Video guardado en: ${filePath}`);
+
+  // limpiar para siguiente uso
+  _currentModulePath = null;
 }
+
 
 async function restartApp() {
    try {
@@ -446,6 +459,7 @@ async function waitForScanResultwarning({
 
 async function FakeScan2(text) {
     console.log("Esto es el QR: " +text);
+    await waitForElementToBeVisible(_linkScanner, 5000);
     await $(_linkScanner).click();
     await waitForElementToBeVisible(_editTextSelector, 5000);
     await enterText(_editTextSelector, text);
