@@ -10,7 +10,7 @@ describe('🔐 Flujos de inicio de sesión Leonidas', () => {
 
   it('❌ Login incorrecto', async () => {
     const videoName = 'Login_Incorrecto';
-    await startVideoRecording(); // ⬅️ INICIO VIDEO
+    await startVideoRecording('login'); // ⬅️ INICIO VIDEO
 
     try {
       const { username, password } = loginData.invalidUser;

@@ -8,7 +8,7 @@ describe('📦 Test Almacenamiento crítico', () => {
 
   it('✅ Almacenar un registro como crítico en línea (datos válidos)', async () => {
     const videoName = 'Critico_DatosValidos';
-    await startVideoRecording(); // ⬅️ INICIO VIDEO
+    await startVideoRecording('almacenamiento/critico'); // ⬅️ INICIO VIDEO
 
     try {
       const { qr, location } = critico.validItem;
@@ -27,7 +27,7 @@ describe('📦 Test Almacenamiento crítico', () => {
 
   it('❌ Mostrar alerta por ubicación inválida', async () => {
     const videoName = 'Critico_UbicacionInvalida';
-    await startVideoRecording(); // ⬅️ INICIO VIDEO
+    await startVideoRecording('almacenamiento/critico'); // ⬅️ INICIO VIDEO
 
     try {
       const { qr, location } = critico.locationinvalidItem;
@@ -46,7 +46,7 @@ describe('📦 Test Almacenamiento crítico', () => {
 
   it('❌ Mostrar alerta al usar un QR inválido', async () => {
     const videoName = 'Critico_QRInvalido';
-    await startVideoRecording(); // ⬅️ INICIO VIDEO
+    await startVideoRecording('almacenamiento/critico'); // ⬅️ INICIO VIDEO
 
     try {
       const { qr, location } = critico.invalidItem;

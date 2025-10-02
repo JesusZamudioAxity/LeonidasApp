@@ -22,8 +22,8 @@ class AlmacenamientoStringer{
     _lblDescripcionValor = '//android.widget.TextView[@text="Descripción:"]/following-sibling::android.widget.TextView[1]';
     _moduloAlmacen= 'android=new UiSelector().text("Almacén")'
     _lblFailRAN = 'android= new UiSelector().text("El ran leido no se encontró.")';
-    _lblFaillocation = 'android= new UiSelector().text("La ubicación no concuerda.")';
-    _lblPasslocation = 'android= new UiSelector().text("Se alamacenó el RAN:")';
+    _lblFaillocation = 'android= new UiSelector().textContains("La ubicación no concuerda.")';
+    _lblPasslocation = 'android= new UiSelector().textContains("Se alamacenó el RAN:")';
     _msgWarninglocation = 'android=new UiSelector().resourceId("android:id/message")';
     _txtPasslocation="Se alamacenó el RAN:";
     _txtFaillocation="La ubicación no concuerda.";
@@ -34,7 +34,7 @@ class AlmacenamientoStringer{
          await FakeScan2(qr);
          
         // Aquí
-        const datosCompletos = await  await waitForScanResultOrFail({
+        const datosCompletos = await waitForScanResultOrFail({
             selectors: [
                 this._lblUbicacionActualValor,
                 this._lblNumeroParteValor,
@@ -50,6 +50,7 @@ class AlmacenamientoStringer{
             return {
                 success: false,
                 reason: 'El ran leido no se encontró.',
+                message: 'El ran leido no se encontró.'
             };
         }
         
@@ -62,10 +63,8 @@ class AlmacenamientoStringer{
             toastTextNG: this._txtFaillocation});  //Detecta "OK" o "NG"
 
            if (Scanlocation.result === 'NG') {
-               const message = "La ubicación no es la correcta";
-               console.warn(`❌ ${message}`);
                await backUntilElementFound(this._moduloAlmacen);
-               return { success: false, reason: 'Ubicacion no coincide con la ubicacion siguiente', message };
+               return { success: false, reason: 'Ubicacion no coincide con la ubicacion siguiente' };
              
            }else{
              return { success: true, reason: 'Se alamacenó el RAN:' };

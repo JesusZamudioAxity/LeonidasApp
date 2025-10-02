@@ -6,28 +6,28 @@ const normal = TestDataManager.getalmNormaldata();
 
 describe('📦 Test Almacenamiento Normal', () => {
 
-    // it('✅ Almacenamiento Normal (datos válidos)', async () => {
-    //     const { qr, location } = normal.validItem;
-    //     console.log("🧪 Parámetros válidos:", qr, location);
+    it('✅ Almacenamiento Normal (datos válidos)', async () => {
+         const { qr, location } = normal.validItem;
+         console.log("🧪 Parámetros válidos:", qr, location);
 
-    //     await startVideoRecording();
+         await startVideoRecording('almacenamiento/normal');
 
-    //     try {
-    //         const result = await AlmacenamientoNormal.normal(qr, location);
-    //         console.log("🔎 Resultado:", result);
+         try {
+             const result = await AlmacenamientoNormal.normal(qr, location);
+             console.log("🔎 Resultado:", result);
 
-    //         expect(result.success).toBe(true); // Debe pasar correctamente
-    //          expect(result.reason).toContain('Se almacenaron los ranes.'); 
-    //     } finally {
-    //         await stopVideoRecordingAndSave('Normal_Valido');
-    //     }
-    // });
+             expect(result.success).toBe(true); // Debe pasar correctamente
+              expect(result.reason).toContain('Se almacenaron los ranes.'); 
+         } finally {
+             await stopVideoRecordingAndSave('Normal_Valido');
+         }
+    });
 
     it('❌ Alm Normal - Mostrar alerta por ubicación inválida', async () => {
         const { qr, location } = normal.locationinvalidItem;
         console.log("🧪 Ubicación inválida:", qr, location);
 
-        await startVideoRecording();
+        await startVideoRecording('almacenamiento/normal');
 
         try {
             const result = await AlmacenamientoNormal.normal(qr, location);
@@ -44,7 +44,7 @@ describe('📦 Test Almacenamiento Normal', () => {
         const { qr, location } = normal.invalidItem;
         console.log("🧪 QR inválido:", qr, location);
 
-        await startVideoRecording();
+        await startVideoRecording('almacenamiento/normal');
 
         try {
             const result = await AlmacenamientoNormal.normal(qr, location);

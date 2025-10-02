@@ -22,6 +22,7 @@ class CerrarASNPage{
         await FakeScan(scanCode);
         await waitForElementToBeVisible( this._cerrarAsnButtonSelector, 10000);
         await clickButtonInContainer("Cerrar ASN");
+        await waitForElementToBeVisible('Confirmación de ASN', 10000);
     }
 }
 
