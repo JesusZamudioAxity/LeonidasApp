@@ -70,6 +70,12 @@ class TestDataManager {
     const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
     return data;
   }
+
+  static getalmMasivodata() {
+    const filePath = path.join(__dirname, 'data/almacenamiento/almasivo.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return data;
+  }
 }
 
 module.exports = TestDataManager;

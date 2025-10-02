@@ -14,6 +14,7 @@ exports.config = {
         normal:['./test/almacenamiento/almacenamientoNormal.test.js'],
         mixed:['./test/almacenamiento/almacenamientoMixed.test.js'],
         stringer:['./test/almacenamiento/almacenamientoStringer.test.js'],
+        masivo:['./test/almacenamiento/almacenamientoMasivo.test.js'],
         all: [
           './test/auth/login.test.js',
           './test/ASN/tracking.test.js',   
@@ -51,7 +52,7 @@ exports.config = {
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
     services: [
-        //'appium'
+        'appium'
     ],
     framework: 'mocha',
     reporters: ['spec'],

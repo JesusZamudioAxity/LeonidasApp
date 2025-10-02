@@ -1,0 +1,48 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# MP4 videos
+*.mp4
+
+# Environment files (nunca subas variables sensibles)
+.env
+.env.*
+
+# Coverage outputs (si usas pruebas)
+coverage/
+
+# Output folders (por ejemplo, si generas dist/)
+dist/
+build/
+
+# IDEs & editors
+.vscode/
+.idea/
+
+# Optional: excluir grabaciones o capturas automáticas
+*.webm
+*.avi
+*.mkv
+*.mov
+
+# Jest cache
+jest-cache/
+jest-config/
+
+# Optional: exclude test results, screenshots, videos
+test-results/
+screenshots/
+videos/
+
+# Optional: Appium artifacts
+appium.log
+appium_output.log
