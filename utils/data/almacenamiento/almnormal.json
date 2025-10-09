@@ -1,7 +1,14 @@
 {
  "validItem": {
    "qr": "[>|p65715el000|q10|v003435|s13659806|ar0409204|<]",
-    "location": "!l?s2a4"
+    "location": "!l?s2a4",
+    "expected": {
+      "id": 570,
+      "partNumber": "65715el000",
+      "ranNumber": "R0409204",
+      "locationId": 106935,
+      "storeConditionId": 1
+    }
   },
   "invalidItem": {
     "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509290|<]",

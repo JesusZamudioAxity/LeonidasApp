@@ -1,15 +1,18 @@
 const AlmacenamientoMasivo = require('../../pageObjects/almacenamiento/almacenamientoMasivo.page');
 const TestDataManager = require('../../utils/testDataManager');
 const { startVideoRecording, stopVideoRecordingAndSave } = require('../../utils/uiHelpers'); // Asegúrate de tener esto
+const { setupDatosAlmacenamiento } = require('../../utils/dataHelpers/setupDatosAlmacenamiento');
+
 
 const masivo = TestDataManager.getalmMasivodata();
 
 describe('📦 Test Almacenamiento Masivo', () => {
 
-    it('✅ Almacenamiento Masivo (datos válidos)', async () => {
-          const { qr, location } = masivo.validItem;
-          console.log("🧪 Parámetros válidos:", qr, location);
 
+    it('✅ Almacenamiento Masivo (datos válidos)', async () => {
+          const { qr, location, expected } = masivo.validItem;
+          console.log("🧪 Parámetros válidos:", qr, location, expected);
+          await setupDatosAlmacenamiento(expected);
           await startVideoRecording('almacenamiento/masivo');
 
           try {

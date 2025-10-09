@@ -52,7 +52,7 @@ exports.config = {
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
     services: [
-        'appium'
+      //  'appium',
     ],
     framework: 'mocha',
     reporters: ['spec'],

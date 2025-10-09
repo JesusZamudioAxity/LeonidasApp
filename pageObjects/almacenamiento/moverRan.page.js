@@ -61,7 +61,7 @@ class AlmacenamientoRAN{
         if (result.result === 'NG') {
             const message = "El ran leído no se encontró";
             console.warn(`❌ ${message}`);
-            return { success: false, reason: 'RAN no encontrado', message };
+            return { success: false, message };
         }
 
         await FakeScan(location);
@@ -77,7 +77,7 @@ class AlmacenamientoRAN{
         if (resultAfterMove.type === 'dialog') {
             const message = resultAfterMove.message;
             console.warn(`❌ ${message}`);
-            return { success: false, reason: 'Error de diálogo', message };
+            return { success: false, message };
         }
 
         const message = 'Resultado desconocido';
