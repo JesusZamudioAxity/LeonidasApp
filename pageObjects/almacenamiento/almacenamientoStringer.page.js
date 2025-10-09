@@ -67,7 +67,7 @@ class AlmacenamientoStringer{
                return { success: false, reason: 'Ubicacion no coincide con la ubicacion siguiente' };
              
            }else{
-             return { success: true, reason: 'Se alamacenó el RAN:' };
+                return { success: true, reason: 'Se alamacenó el RAN:' };
            }
 
      }

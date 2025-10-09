@@ -1,7 +1,14 @@
 {
    "validItem": {
-    "qr": "[>|p65715el000|q10|v003435|s13659806|ar0509213|<]",
-    "location": "!l?trimcriticoaa"
+    "qr": "[>|p65715el000|q10|v003435|s13659806|aR0509212|<]",
+    "location": "!l?trimcriticoaa",
+    "expected": {
+      "id": 606,
+      "partNumber": "65715el000",
+      "ranNumber": "R0509212",
+      "locationId": 106935,
+      "storeConditionId": 1
+    }
   },
   "locationinvalidItem": {
     "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509201|<]",
@@ -12,4 +19,5 @@
     "location": "!l?ZI02G"
   }
 }
+
 

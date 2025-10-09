@@ -4,13 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "wdio": "wdio run ./wdio.conf.js", 
+    "wdio": "wdio run ./wdio.conf.js",
     "start:emulator1": "%ANDROID_SDK_ROOT%\\emulator\\emulator.exe @Pixel_3a",
     "start:emulator": "startEmulador.js",
     "test:mobile": "npx wdio run wdio.conf.js",
     "test:app1": "start \"\" npm run start:emulator1 && adb wait-for-device && timeout /t 30 && npm run test:mobile",
     "test:app": "npm run start:emulator && npm run test:mobile",
-
     "test:login": "npx wdio run wdio.conf.js --spec ./test/auth/login.test.js",
     "test:tracking": "npx wdio run wdio.conf.js --spec ./test/ASN/tracking.test.js",
     "test:ASN": "npx wdio run wdio.conf.js --spec ./test/ASN/cerrarASN.test.js",
@@ -28,5 +27,8 @@
     "@wdio/mocha-framework": "^9.19.2",
     "@wdio/spec-reporter": "^9.19.2",
     "appium-uiautomator2-driver": "^5.0.0"
+  },
+  "dependencies": {
+    "mssql": "^12.0.0"
   }
 }

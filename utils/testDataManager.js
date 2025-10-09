@@ -40,11 +40,8 @@ class TestDataManager {
   static getmoverRANdata() {
     const filePath = path.join(__dirname, 'data/almacenamiento/moverRAN.json');
       const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')); // <-- Aquí defines "data"
-    // Normaliza QR a array
-    if (!Array.isArray(data.items)) {
-      data.items = [data.items];
-    }
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+   
+    return data;
   }
   
   static getalmCriticodata() {

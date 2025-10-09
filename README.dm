@@ -101,5 +101,12 @@ Si tienes definidas suites en `wdio.conf.js`, puedes ejecutar grupos de tests as
 🚀 `npx wdio run wdio.conf.js --suite ran`  
 🚀 `npx wdio run wdio.conf.js --suite critico`  
 
+Importante - Requisito para la ejecución de autómatas
+Para poder ejecutar un autómata, es necesario cumplir una de las siguientes condiciones:
+La aplicación debe estar cerrada completamente antes de iniciar la ejecución (el autómata se ejecuta desde el proceso de inicio de sesión).
+El usuario debe haber iniciado sesión correctamente y ejecutar el autómata desde los puntos de menú generales.
+
+Importante: El autómata ha sido codificado específicamente para ejecutarse desde el proceso de login o desde el menú principal de la 
+aplicación. Otros puntos de ejecución no están soportados y pueden generar errores.
  
  //npx wdio run wdio.conf.js

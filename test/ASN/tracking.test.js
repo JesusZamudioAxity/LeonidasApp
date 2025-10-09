@@ -10,21 +10,24 @@ const {
   startVideoRecording,
   stopVideoRecordingAndSave
 } = require('../../utils/uiHelpers');
+const { setupTrackingLinker } = require('../../utils/dataHelpers/setUpASN');
 
 const trackingData = TestDataManager.getTrackingData();
 
 const _editTextSelector = 'android=new UiSelector().className("android.widget.EditText").instance(0)';
 const _itemLabelSelector = 'android=new UiSelector().text("Item:")';
 const _viewGroupSelector = 'android=new UiSelector().className("android.view.ViewGroup").instance(11)';
-const _siguienteButtonSelector = 'android=new UiSelector().text("SIGUIENTE")';
-const _regresarAlMenuSelector = 'android=new UiSelector().text("REGRESAR AL MENÚ")';
 const _warningItemtSelector = 'android=new UiSelector().text("Ingresa un número de item válido")';
 
 describe('📦 Tracking ventanilla', () => {
 
-  for (const { trackingNumber, scanCode } of trackingData.validItem) {
+  for (const { trackingNumber, scanCode, resetParams } of trackingData.validItem) {
+    
+
     it(`✅ Flujo Tracking ventanilla para tracking #${trackingNumber}`, async () => {
       const videoName = `TrackingVentanilla_Valid_${trackingNumber}`;
+      await setupTrackingLinker(resetParams)
+      
       await startVideoRecording('ASN/tracking'); // ⬅️ INICIO VIDEO
 
       try {
