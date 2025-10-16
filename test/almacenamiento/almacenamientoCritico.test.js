@@ -11,14 +11,14 @@ describe('📦 Test Almacenamiento crítico', () => {
 
   it('✅ Almacenar un registro como crítico en línea (datos válidos)', async () => {
     const videoName = 'Critico_DatosValidos';
-    const { qr, location, expected } = critico.validItem;
+    const { qr, location, expected  } = critico.validItem;
     
     await setupDatosAlmacenamiento(expected);  
     await startVideoRecording('almacenamiento/critico'); // ⬅️ INICIO VIDEO
 
     try {
       
-      console.log("🧪 Parámetros válidos:", qr, location,expected);
+      console.log("🧪 Parámetros válidos:", qr, location,);
 
       const result = await AlmacenamientoCritico.critico(qr, location);
 

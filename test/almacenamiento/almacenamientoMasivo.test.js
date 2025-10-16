@@ -9,21 +9,21 @@ const masivo = TestDataManager.getalmMasivodata();
 describe('📦 Test Almacenamiento Masivo', () => {
 
 
-    it('✅ Almacenamiento Masivo (datos válidos)', async () => {
-          const { qr, location, expected } = masivo.validItem;
-          console.log("🧪 Parámetros válidos:", qr, location, expected);
-          await setupDatosAlmacenamiento(expected);
-          await startVideoRecording('almacenamiento/masivo');
+     it('✅ Almacenamiento Masivo (datos válidos)', async () => {
+           const { qr, location, expected } = masivo.validItem;
+           console.log("🧪 Parámetros válidos:", qr, location, expected);
+           await setupDatosAlmacenamiento(expected);
+           await startVideoRecording('almacenamiento/masivo');
 
-          try {
-              const result = await AlmacenamientoMasivo.masivo(qr, location);
-              console.log("🔎 Resultado:", result);
+           try {
+               const result = await AlmacenamientoMasivo.masivo(qr, location);
+               console.log("🔎 Resultado:", result);
 
-              expect(result.success).toBe(true); // Debe pasar correctamente
-               expect(result.reason).toContain('Se almacenaron'); 
-          } finally {
-              await stopVideoRecordingAndSave('masivo_Valido');
-          }
+               expect(result.success).toBe(true); // Debe pasar correctamente
+                expect(result.reason).toContain('Se almacenaron'); 
+           } finally {
+               await stopVideoRecordingAndSave('masivo_Valido');
+           }
     });
 
     it('❌ Alm masivo - Mostrar alerta por ubicación inválida', async () => {
@@ -37,7 +37,7 @@ describe('📦 Test Almacenamiento Masivo', () => {
             console.log("🔎 Resultado:", result);
 
             expect(result.success).toBe(false); // Esperamos que falle
-            expect(result.reason).toContain('La ubicación no coicide'); // Mensaje esperado
+            expect(result.reason).toContain('La ubicación no coincide'); // Mensaje esperado
         } finally {
             await stopVideoRecordingAndSave('masivo_UbicacionInvalida');
         }

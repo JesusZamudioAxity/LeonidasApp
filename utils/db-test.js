@@ -4,7 +4,7 @@ const config = {
   user: 'sa',
   password: 'TjFzc2FuMjAyNQ==',
   server: 'localhost',
-  port: 2244,
+  port: 1433,
   database: 'WMSLeonidas',
   options: {
     encrypt: false,

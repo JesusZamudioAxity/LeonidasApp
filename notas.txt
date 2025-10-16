@@ -1,8 +1,12 @@
 appium -p 4724 --allow-cors
 
 ssh -N -L 2244:192.168.5.242:30000 -o StrictHostKeyChecking=no -i bastion-kp-qa.pem admin@ec2-3-239-78-223.compute-1.amazonaws.com
+Ssh -N -L 3433:192.168.24.219:30000 -o StrictHostKeyChecking=no -i bastion-kp-qa.pem admin@ec2-3-239-78-223.compute-1.amazonaws.com
+ssh -N -L 1433:192.168.7.22:30000 -o StrictHostKeyChecking=no -i bastion-kp-qa.pem admin@ec2-3-239-78-223.compute-1.amazonaws.com
+192.168.7.22
 
-Puedes iniciar cualquiera de estos emuladores con este comando desde CMD:
+curl ipinfo.io/ip
+
 
 %ANDROID_SDK_ROOT%\emulator\emulator.exe -avd Medium_Phone_API_36.0
 
@@ -17,6 +21,16 @@ npx wdio run wdio.conf.js
 npx wdio run wdio.conf.js --suite all
 
 npm run test:app
+
+
+Verifica que allure-results tenga contenido:
+dir allure-results
+
+Genera el reporte:
+npx allure generate allure-results --clean -o allure-report
+
+npx allure open allure-report
+
 
 ------
 {

@@ -1,43 +1,17 @@
 {
   "validItem": [
     {
-      "trackingNumber": "48",
-      "scanCode": "[>|p65715el000|q30|v003435|s13659806|aR1509204|<]",
+      "trackingNumber": "15",
+      "scanCode": "[>|p65715el000|q10|v003435|s13659806|aR1010000|<]",
       "resetParams": {
-        "asns": "N1509204",
+        "asns": "N1010000",
         "statusId": 1
       }
     }
-    ,
-    {
-      "trackingNumber": "50",
-      "scanCode": "[>|p65715el000|q30|v003435|s13659806|aR1509206|<]",
-      "resetParams": {
-        "asns": "N1509206",
-        "statusId": 1
-      }
-    }
-    ,
-    {
-      "trackingNumber": "51",
-      "scanCode": "[>|p65715el000|q30|v003435|s13659806|aR1509207|<]",
-      "resetParams": {
-        "asns": "N1509207",
-        "statusId": 1
-      }
-    }
-    ,
-    {
-      "trackingNumber": "52",
-      "scanCode": "[>|p65715el000|q30|v003435|s13659806|aR1509208|<]",
-      "resetParams": {
-        "asns": "N1509208",
-        "statusId": 1
-      }
-    }
+   
   ],
    "invalidItem":{
     "trackingNumber": "0",
-    "scanCode": "[>|p65715el000|q300|v003435|s13659806|ar0509200|<]"
+    "scanCode": "[>|p65715el000|q10|v003435|s13659806|aR1010000|<]"
   }
 }

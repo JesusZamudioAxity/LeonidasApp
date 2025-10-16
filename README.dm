@@ -50,23 +50,46 @@ appium driver install uiautomator2
 📝 Estructura general del proyecto
 
 ├── test/
-│   ├── ASN/
-│   │   ├── tracking.test.js
-│   │   └── cerrarASN.test.js
 │   └── login.test.js
+│   ├── ASN/
+│       ├── tracking.test.js
+│       └── cerrarASN.test.js
+│   ├── almacenamiento/
+│       ├── almacenamientoCritico.test.js
+│       └── almacenamientoStringer.test.js
+│       └── almacenamientoNormal.test.js
+│       └── almacenamientoMixed.test.js
+│       └── almacenamientoMasivo.test.js
+│       └── moverRan.test.js
 |
 ├── pageObjects/
+|   └login.page.js 
 │   └── ASN/
 │       ├── tracking.page.js
 │       └── cerrasASN.page.js
-|   └login.page.js 
-│
-├── data/
-│   └── ASN/
-│       ├── trackingData.json   // 
-│       └── cerrarASN.json
+│   ├── almacenamiento/
+│       ├── almacenamientoCritico.page.js
+│       └── almacenamientoStringer.page.js
+│       └── almacenamientoNormal.page.js
+│       └── almacenamientoMixed.page.js
+│       └── almacenamientoMasivo.page.js
+│       └── moverRan.test.js
 │
 ├── utils/
+│   └── ASN/
+│       ├── trackingData.json    
+│       └── cerrarASN.json
+│   ├── almacenamiento/
+│       ├── almcritico.page.js
+│       └── almastringer.page.js
+│       └── almnormal.page.js
+│       └── almmixed.page.js
+│       └── almasivo.page.js
+│       └── moverRan.test.js
+   ├── dataHelpers/
+│       ├── asetUpASN.js
+│       └── setupDatosAlmacenamiento.js
+│   ├── db-test.js
 │   ├── testDataManager.js
 │   └── uiHelpers.js
 │
@@ -84,22 +107,44 @@ y cambiar los datos de la carpeta data para la ejecución correcta
 
 Ejecuta un test scripts en `package.json`:
 
-🚀 `npm run test:login`  
-🚀 `npm run test:tracking`  
-🚀 `npm run test:ASN`  
-🚀 `npm run test:ran`  
-🚀 `npm run test:critico`  
+🚀 npm run test:login
+🚀 npm run test:tracking
+🚀 npm run test:ASN
+🚀 npm run test:ran
+🚀 npm run test:critico
+🚀 npm run test:normal
+🚀 npm run test:mixed
+🚀 npm run test:stringer
+🚀 npm run test:masivo
+
 ---
 
 ### 2. Ejecutar un grupo de tests (suite) con `--suite`
 
 Si tienes definidas suites en `wdio.conf.js`, puedes ejecutar grupos de tests así:
 
-🚀 `npx wdio run wdio.conf.js --suite login`  
-🚀 `npx wdio run wdio.conf.js --suite tracking`  
-🚀 `npx wdio run wdio.conf.js --suite ASN`  
-🚀 `npx wdio run wdio.conf.js --suite ran`  
-🚀 `npx wdio run wdio.conf.js --suite critico`  
+🚀 npx wdio run wdio.conf.js --suite login
+🚀 npx wdio run wdio.conf.js --suite tracking
+🚀 npx wdio run wdio.conf.js --suite ASN
+🚀 npx wdio run wdio.conf.js --suite ran
+🚀 npx wdio run wdio.conf.js --suite critico
+🚀 npx wdio run wdio.conf.js --suite normal
+🚀 npx wdio run wdio.conf.js --suite mixed
+🚀 npx wdio run wdio.conf.js --suite stringer
+🚀 npx wdio run wdio.conf.js --suite masivo
+
+Correr todas las suites 
+🚀 npx wdio run wdio.conf.js --suite all
+ 
+### 3. 🛠️ Genera el reporte:
+🚀 npm run report:allure 
+ó
+🚀 npx allure generate allure-results --clean -o allure-report
+
+### 4. 🌐 Abre el reporte en tu navegador:
+🚀 npm run report:open
+ó
+🚀 npx allure open allure-report
 
 Importante - Requisito para la ejecución de autómatas
 Para poder ejecutar un autómata, es necesario cumplir una de las siguientes condiciones:
@@ -108,5 +153,3 @@ El usuario debe haber iniciado sesión correctamente y ejecutar el autómata des
 
 Importante: El autómata ha sido codificado específicamente para ejecutarse desde el proceso de login o desde el menú principal de la 
 aplicación. Otros puntos de ejecución no están soportados y pueden generar errores.
- 
- //npx wdio run wdio.conf.js

@@ -1,41 +1,9 @@
 {
   "QR": [
     {
-      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509215|<]",
+      "scanCode": "[>|p65715el000|q10|v003435|s13659806|aR1010002|<]",
       "resetParams": {
-        "uclNumber": "N0509215",
-        "shipmentStatusId": 1,
-        "shipmentDetailStatusId": 1
-      }
-    },
-    {
-      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509216|<]",
-      "resetParams": {
-        "uclNumber": "N0509216",
-        "shipmentStatusId": 1,
-        "shipmentDetailStatusId": 1
-      }
-    },
-    {
-      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509217|<]",
-      "resetParams": {
-        "uclNumber": "N0509217",
-        "shipmentStatusId": 1,
-        "shipmentDetailStatusId": 1
-      }
-    },
-    {
-      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509218|<]",
-      "resetParams": {
-        "uclNumber": "N0509218",
-        "shipmentStatusId": 1,
-        "shipmentDetailStatusId": 1
-      }
-    },
-    {
-      "scanCode": "[>|p65715el000|q20|v003435|s13659806|ar0509219|<]",
-      "resetParams": {
-        "uclNumber": "N0509219",
+        "uclNumber": "N1010002",
         "shipmentStatusId": 1,
         "shipmentDetailStatusId": 1
       }

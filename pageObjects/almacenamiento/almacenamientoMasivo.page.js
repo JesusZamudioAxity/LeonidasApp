@@ -26,7 +26,7 @@ class AlmacenamientoMasivo{
     _msgRANOK = 'android=new UiSelector().text("OK")';
     _msgRANNG = 'android=new UiSelector().text("NG")';
     _txtPasslocation="Se almacenaron";
-    _txtFaillocation="La ubicación no coicide con las esperada.";
+    _txtFaillocation="La ubicación no coincide con la esperada.";
     	
 
 

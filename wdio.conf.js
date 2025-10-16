@@ -1,3 +1,7 @@
+const fs = require('fs');
+const path = require('path');
+const allure = require('@wdio/allure-reporter').default;
+
 exports.config = {
 
     logLevel: 'info',  // nivel general, lo puedes dejar en info o debug
@@ -15,13 +19,16 @@ exports.config = {
         mixed:['./test/almacenamiento/almacenamientoMixed.test.js'],
         stringer:['./test/almacenamiento/almacenamientoStringer.test.js'],
         masivo:['./test/almacenamiento/almacenamientoMasivo.test.js'],
-        all: [
-          './test/auth/login.test.js',
-          './test/ASN/tracking.test.js',   
-          './test/ASN/cerrarASN.test.js',
-          './test/almacenamiento/moverRAN.test.js',
-          './test/almacenamiento/almacenamientoCritico.test.js'  
-        ]
+      all: [
+        './test/ASN/tracking.test.js',
+        './test/ASN/cerrarASN.test.js',
+        './test/almacenamiento/moverRAN.test.js',
+        './test/almacenamiento/almacenamientoCritico.test.js',
+        './test/almacenamiento/almacenamientoNormal.test.js',
+        './test/almacenamiento/almacenamientoMixed.test.js',
+        './test/almacenamiento/almacenamientoStringer.test.js',
+        './test/almacenamiento/almacenamientoMasivo.test.js'
+      ]
     },
 
   // ⚠️ Asegúrate de esto si necesitas ejecución en orden  
@@ -35,9 +42,19 @@ exports.config = {
     exclude: [
         // 'path/to/excluded/files'
     ],
-    capabilities: [{
-        maxInstances: 1,
+    reporters: [
+      'spec',
+      ['allure', {
+        outputDir: 'allure-results',
+        disableWebdriverStepsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
+      }],
+    ],
+
+    maxInstances: 1,
+    capabilities: [{     
         platformName: "Android",
+        maxInstances: 1,
         "appium:deviceName": "emulator-5554",
         "appium:platformVersion": "16",
         "appium:automationName": "UiAutomator2",
@@ -52,32 +69,31 @@ exports.config = {
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
     services: [
-      //  'appium',
+        'appium',
     ],
     framework: 'mocha',
-    reporters: ['spec'],
     mochaOpts: {
         ui: 'bdd',
         timeout: 60000
     },
-    before: async function (capabilities, specs) {
-        const { restartApp, loginIfNeeded } = require('./utils/sessionManager');
+    before: async function () {
+        const { loginIfNeeded } = require('./utils/sessionManager');
 
       //  console.log('🔁 Reiniciando app...');
       //  await restartApp();
 
         console.log('🔐 Haciendo login si es necesario...');
         await loginIfNeeded();
+       // await browser.pause(2000); // tiempo para ver qué pantalla tiene la app
 
         console.log('✅ App lista para correr tests.');
     },
      afterSuite: async function (suite) {
-    const { restartApp } = require('./utils/sessionManager');
-    
-    console.log(`🔁 Reiniciando app después de la suite "${suite.title}"...`);
-  //  await restartApp();
-  }
-
+      const { restartApp } = require('./utils/sessionManager');
+      
+      console.log(`🔁 Reiniciando app después de la suite "${suite.title}"...`);
+      await restartApp();
+    },
 
     //
     // =====

@@ -59,7 +59,7 @@ class AlmacenamientoRAN{
             toastTextNG: this._txtRANFail}); // Detecta "OK" o "NG"
 
         if (result.result === 'NG') {
-            const message = "El ran leído no se encontró";
+            const message = "El ran leido no se encontró";
             console.warn(`❌ ${message}`);
             return { success: false, message };
         }

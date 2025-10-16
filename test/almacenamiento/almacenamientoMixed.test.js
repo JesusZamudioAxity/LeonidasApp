@@ -63,38 +63,3 @@ describe('📦 Test Almacenamiento Mixed', () => {
 
 });
 
-
-
-// const AlmacenamientoMixed = require('../../pageObjects/almacenamiento/almacenamientoMixed.page');
-// const TestDataManager = require('../../utils/testDataManager');
-
-// const mixed = TestDataManager.getalmMixedata();
-
-// describe('📦 Test Almacenamiento Mixed', () => {
-  
-//     // it('✅ Almacenamiento Mixed (datos válidos)', async () => {
-//     //     const { qr, location } = mixed.validItem;
-//     //     console.log("🧪 Parámetros válidos:", qr, location);
-        
-//     //     await AlmacenamientoMixed.goToMixed();
-//     //     await AlmacenamientoMixed.mixed(qr, location);
-//     // });
-
-
-//      it('❌Alm Normal Mostrar alerta por ubicación inválida', async () => {
-//          const { qr, location } = mixed.locationinvalidItem;
-//          console.log("🧪 Ubicación inválida:", qr, location);
-        
-//          await AlmacenamientoMixed.goToMixed();
-//          await AlmacenamientoMixed.mixed(qr, location);
-//      });
-
-//       it('❌Alm Normal Mostrar alerta al usar un QR inválido', async () => {
-//         const { qr, location } = mixed.invalidItem;
-//         console.log("🧪 QR inválido:", qr, location);
-        
-//         await AlmacenamientoMixed.goToMixed();
-//         await AlmacenamientoMixed.mixed(qr, location);
-//     });
-
-// });
