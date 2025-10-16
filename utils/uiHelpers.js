@@ -8,15 +8,19 @@ const _menuSelector = 'android=new UiSelector().text("Menú")';
 const appPackage = 'com.ndzl.emdkmaui';
 const fs = require('fs');
 const path = require('path');
-let _currentModulePath = null;  // e.j. "almacenamiento/almacenamientoStringer"
+let _currentModulePath = null;
 
 function sanitizeFilename(filename) {
-    // Elimina o reemplaza caracteres inválidos para nombres de archivo en Windows
-    return filename.replace(/[<>:"/\\|?*\[\]]/g, '_');
+  return filename.replace(/[<>:"/\\|?*\[\]]/g, '_');
+}
+
+function getCurrentModuleFolder(modulePath = null) {
+  const folder = _currentModulePath ? sanitizeFilename(_currentModulePath) : 'default';
+  _currentModulePath = modulePath; // limpiar después de usarlo
+  return folder;
 }
 
 async function startVideoRecording(modulePath = null) {
-  // modulePath podría ser algo como "almacenamiento/almacenamientoStringer" o "ASN/tracking"
   _currentModulePath = modulePath;
   await driver.startRecordingScreen();
 }
@@ -25,15 +29,9 @@ async function stopVideoRecordingAndSave(filename = 'test-video') {
   const videoBase64 = await driver.stopRecordingScreen();
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const sanitizedFilename = sanitizeFilename(filename);
+  const moduleFolder = getCurrentModuleFolder();
 
-  // determinar subcarpeta para módulo (o default)
-  const moduleFolder = _currentModulePath
-    ? sanitizeFilename(_currentModulePath)
-    : 'default';
-
-  // ruta completa: reports/videos/<moduleFolder>
   const videosDir = path.resolve(__dirname, `../reports/videos/${moduleFolder}`);
-
   if (!fs.existsSync(videosDir)) {
     fs.mkdirSync(videosDir, { recursive: true });
   }
@@ -42,9 +40,59 @@ async function stopVideoRecordingAndSave(filename = 'test-video') {
   fs.writeFileSync(filePath, videoBase64, 'base64');
   console.log(`🎥 Video guardado en: ${filePath}`);
 
-  // limpiar para siguiente uso
-  _currentModulePath = null;
+  // ✅ Agrega el video al reporte de Allure
+  try {
+    const videoBuffer = fs.readFileSync(filePath);
+    allure.addAttachment('Video', videoBuffer, 'video/mp4');
+    console.log(`📎 Video agregado al reporte Allure: ${filePath}`);
+  } catch (err) {
+    console.warn(`⚠️ No se pudo adjuntar el video al reporte: ${err.message}`);
+  }
+
+  _currentModulePath = null; // limpiar
 }
+
+
+
+// const fs = require('fs');
+// const path = require('path');
+// let _currentModulePath = null;  // e.j. "almacenamiento/almacenamientoStringer"
+
+// function sanitizeFilename(filename) {
+//     // Elimina o reemplaza caracteres inválidos para nombres de archivo en Windows
+//     return filename.replace(/[<>:"/\\|?*\[\]]/g, '_');
+// }
+
+// async function startVideoRecording(modulePath = null) {
+//   // modulePath podría ser algo como "almacenamiento/almacenamientoStringer" o "ASN/tracking"
+//   _currentModulePath = modulePath;
+//   await driver.startRecordingScreen();
+// }
+
+// async function stopVideoRecordingAndSave(filename = 'test-video') {
+//   const videoBase64 = await driver.stopRecordingScreen();
+//   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+//   const sanitizedFilename = sanitizeFilename(filename);
+
+//   // determinar subcarpeta para módulo (o default)
+//   const moduleFolder = _currentModulePath
+//     ? sanitizeFilename(_currentModulePath)
+//     : 'default';
+
+//   // ruta completa: reports/videos/<moduleFolder>
+//   const videosDir = path.resolve(__dirname, `../reports/videos/${moduleFolder}`);
+
+//   if (!fs.existsSync(videosDir)) {
+//     fs.mkdirSync(videosDir, { recursive: true });
+//   }
+
+//   const filePath = path.join(videosDir, `${sanitizedFilename}_${timestamp}.mp4`);
+//   fs.writeFileSync(filePath, videoBase64, 'base64');
+//   console.log(`🎥 Video guardado en: ${filePath}`);
+
+//   // limpiar para siguiente uso
+//   _currentModulePath = null;
+// }
 
 
 async function restartApp() {
@@ -578,6 +626,8 @@ async function scrollToText(text) {
 }
 
 module.exports = {
+    sanitizeFilename,
+    getCurrentModuleFolder,
     restartApp,
     startVideoRecording,
     stopVideoRecordingAndSave,

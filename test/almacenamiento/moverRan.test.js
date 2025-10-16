@@ -7,8 +7,8 @@ const ran = TestDataManager.getmoverRANdata();
 //const ranData = TestDataManager.getmoverRANdata();
 
 describe('📦 Test de Mover RAN', () => {
+    for (const { qr, location, expected } of ran.validItem3y4) {
       it('✅ Mover RAN a 3 y 4 (datos válidos)', async () => {
-          const { qr, location, expected } = ran.validItem3y4;
           console.log("🧪 Parámetros válidos:", qr, location,expected);
           
           await setupDatosAlmacenamiento(expected);
@@ -24,6 +24,7 @@ describe('📦 Test de Mover RAN', () => {
               await stopVideoRecordingAndSave(`MoverRAN3y4_Valido`);
           }
       });
+    }  
 
       it('✅ Mover RAN a 1 y 2 (datos válidos)', async () => {
         const { qr, location, expected } = ran.validItem1y2;
@@ -67,38 +68,10 @@ describe('📦 Test de Mover RAN', () => {
               const result = await AlmacenamientoRAN.moverRAN(qr, location);
   
               expect(result.success).toBe(false);
-              expect(result.message).toContain('El ran leído no se encontró');
+              expect(result.message).toContain('El ran leido no se encontró');
           } finally {
               await stopVideoRecordingAndSave(`MoverRAN_QRInvalido`);
           }
       });
 });
 
-
-/*
- ranData.items.forEach((ran, index) => {
-    const expectedToPass = ran.shouldPass ?? true;
-
-    it(`Caso #${index + 1} - ${expectedToPass ? '✅ Debe pasar' : '❌ Debe fallar'}`, async () => {
-      const videoName = `MoverRAN_Caso_${index + 1}_${expectedToPass ? 'DebePasar' : 'DebeFallar'}`;
-      await startVideoRecording('almacenamiento/moverRan'); // ⬅️ INICIO VIDEO
-
-      try {
-        const result = await AlmacenamientoRAN.moverRAN(ran.qr, ran.location);
-
-        const statusEmoji = result.success ? '✅' : '❌';
-        const expectedText = expectedToPass ? 'PASAR' : 'FALLAR';
-        const actualText = result.success ? 'PASÓ' : 'FALLÓ';
-        const reason = result.message || result.reason || 'Sin mensaje';
-
-        if (result.success !== expectedToPass) {
-          throw new Error(`Resultado real: ${actualText} ${statusEmoji} | Esperado: ${expectedText} | Mensaje: ${reason}`);
-        }
-
-        console.info(`✓ Caso #${index + 1} - ${expectedToPass ? '✅ Debe pasar' : '❌ Debe fallar'} | ${actualText} ${statusEmoji} | ${reason}`);
-      
-      } finally {
-        await stopVideoRecordingAndSave(videoName); // ⬅️ FIN VIDEO
-      }
-    });
-  });*/
