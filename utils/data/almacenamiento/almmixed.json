@@ -1,14 +1,21 @@
 {
  "validItem": {
-   "qr": "[>|p65715el000|Q10|V003484|S13659806|aR0309200|<]",
-    "location": "!l?s2a4"
+   "qr": "[>|p65715el000|q20|v003435|s13659806|aR1010105|<]",
+    "location": "!l?ZI01G",
+     "expected": {
+      "id": 39273,
+      "partNumber": "65715el000",
+      "ranNumber": "R1010105",
+      "locationId": 38438,
+      "storeConditionId": 1
+    }
   },
   "invalidItem": {
-    "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509290|<]",
+    "qr": "[>|p65715el000|q30|v003435|s13659806|aR1010290|<]",
     "location": "!l?ZI02G"
   },
   "locationinvalidItem": {
-    "qr": "[>|p65715el000|q20|v003435|s13659806|ar0509201|<]",
-    "location": "!l?s2a8"
+    "qr": "[>|p65715el000|q30|v003435|s13659806|aR1010200|<]",
+    "location": "!l?ZI02H"
   }
 }

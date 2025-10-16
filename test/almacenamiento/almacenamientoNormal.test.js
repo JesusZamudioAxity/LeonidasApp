@@ -1,23 +1,28 @@
 const AlmacenamientoNormal = require('../../pageObjects/almacenamiento/almacenamientoNormal.page');
 const TestDataManager = require('../../utils/testDataManager');
-const { startVideoRecording, stopVideoRecordingAndSave } = require('../../utils/uiHelpers'); // Asegúrate de tener esto
+const { startVideoRecording, stopVideoRecordingAndSave } = require('../../utils/uiHelpers'); 
+const { setupDatosAlmacenamiento } = require('../../utils/dataHelpers/setupDatosAlmacenamiento'); 
 
 const normal = TestDataManager.getalmNormaldata();
 
 describe('📦 Test Almacenamiento Normal', () => {
 
     it('✅ Almacenamiento Normal (datos válidos)', async () => {
-         const { qr, location } = normal.validItem;
-         console.log("🧪 Parámetros válidos:", qr, location);
-
-         await startVideoRecording('almacenamiento/normal');
+        const { qr, location, expected } = normal.validItem;
+        console.log("🧪 Parámetros válidos:", qr, location,expected);
+        
+        await setupDatosAlmacenamiento(expected);  
+        await startVideoRecording('almacenamiento/normal');
 
          try {
+
+                      
+             
              const result = await AlmacenamientoNormal.normal(qr, location);
              console.log("🔎 Resultado:", result);
 
              expect(result.success).toBe(true); // Debe pasar correctamente
-              expect(result.reason).toContain('Se almacenaron los ranes.'); 
+             expect(result.reason).toContain('Se almacenaron los ranes.'); 
          } finally {
              await stopVideoRecordingAndSave('Normal_Valido');
          }

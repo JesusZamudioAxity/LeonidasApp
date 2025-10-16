@@ -1,20 +1,25 @@
 const AlmacenamientoCritico = require('../../pageObjects/almacenamiento/almacenamientoCritico.page');
 const TestDataManager = require('../../utils/testDataManager');
+const { actualizarStoreLocation, consultarStoreLocation } = require('../../utils/db-test');
 const { startVideoRecording, stopVideoRecordingAndSave } = require('../../utils/uiHelpers');
+const { setupDatosAlmacenamiento } = require('../../utils/dataHelpers/setupDatosAlmacenamiento'); // 👈 nuevo import
 
 const critico = TestDataManager.getalmCriticodata();
 
 describe('📦 Test Almacenamiento crítico', () => {
 
+
   it('✅ Almacenar un registro como crítico en línea (datos válidos)', async () => {
     const videoName = 'Critico_DatosValidos';
+    const { qr, location, expected  } = critico.validItem;
+    
+    await setupDatosAlmacenamiento(expected);  
     await startVideoRecording('almacenamiento/critico'); // ⬅️ INICIO VIDEO
 
     try {
-      const { qr, location } = critico.validItem;
-      console.log("🧪 Parámetros válidos:", qr, location);
+      
+      console.log("🧪 Parámetros válidos:", qr, location,);
 
-      await AlmacenamientoCritico.goToCritico();
       const result = await AlmacenamientoCritico.critico(qr, location);
 
       expect(result.success).toBe(true);
@@ -33,7 +38,6 @@ describe('📦 Test Almacenamiento crítico', () => {
       const { qr, location } = critico.locationinvalidItem;
       console.log("🧪 Ubicación inválida:", qr, location);
 
-      await AlmacenamientoCritico.goToCritico();
       const result = await AlmacenamientoCritico.critico(qr, location);
 
       expect(result.success).toBe(false);
@@ -52,7 +56,6 @@ describe('📦 Test Almacenamiento crítico', () => {
       const { qr, location } = critico.invalidItem;
       console.log("🧪 QR inválido:", qr, location);
 
-      await AlmacenamientoCritico.goToCritico();
       const result = await AlmacenamientoCritico.critico(qr, location);
 
       expect(result.success).toBe(false);

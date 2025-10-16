@@ -19,7 +19,6 @@ class AlmacenamientoMixed{
     _moduloAlmacen= 'android=new UiSelector().text("Almacén")'
     _resulbusqueda = 'android=new UiSelector().className("android.view.ViewGroup").instance(13)';
     _lblHistorialOpe= 'android= new UiSelector().text("Historial de operación")';
-    _lblHisorialOpe= 'android= new UiSelector().text("Hisorial de operación")';
     _btnEscanarUbi= 'android=new UiSelector().text("Escanear ubicación")';
 
     _msgWarninglocation = 'android=new UiSelector().resourceId("android:id/message")';
@@ -49,7 +48,7 @@ class AlmacenamientoMixed{
 
 
 
-        await waitForElementToBeVisible(this._lblHisorialOpe);
+        await waitForElementToBeVisible(this._lblHistorialOpe);
         await FakeScan(location);
          
         const Scanlocation = await waitForScanResultwarning({

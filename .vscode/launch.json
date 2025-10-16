@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Debug WDIO Suite ASN",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["wdio", "run", "wdio.conf.js", "--suite", "normal"],
+      "runtimeArgs": ["wdio", "run", "wdio.conf.js", "--suite", "ran"],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**"]

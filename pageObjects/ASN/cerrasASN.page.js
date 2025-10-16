@@ -11,6 +11,7 @@ class CerrarASNPage{
     _confirmacionOperacionSelector = 'android=new UiSelector().text("Confirmación de operación")';
     _cancelButtonSelector = 'android=new UiSelector().resourceId("android:id/button2")';
     _cerrarAsnButtonSelector = 'android=new UiSelector().text("Cerrar ASN")';
+    _lblasnConfirmation = 'android=new UiSelector().text("Confirmación de ASN")';
 
     async confirmarASN (scanCode){
         await scrollToText("Confirmación de ASN");      
@@ -22,8 +23,11 @@ class CerrarASNPage{
         await FakeScan(scanCode);
         await waitForElementToBeVisible( this._cerrarAsnButtonSelector, 10000);
         await clickButtonInContainer("Cerrar ASN");
-        await waitForElementToBeVisible('Confirmación de ASN', 10000);
+        await waitForElementToBeVisible(this._lblasnConfirmation, 10000);
     }
 }
 
 module.exports = new CerrarASNPage();
+
+
+
