@@ -1,0 +1,81 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  ANDROID_HOME: $(HOME)/android-sdk
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
+  - task: JavaToolInstaller@0
+    inputs:
+      versionSpec: '17'
+      jdkArchitecture: 'x64'
+      jdkSourceOption: 'PreInstalled'
+    displayName: 'Install Java 17'
+
+  - script: |
+      echo "Installing Android SDK command line tools..."
+      mkdir -p $ANDROID_HOME
+      wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdline-tools.zip
+      unzip -q cmdline-tools.zip -d $ANDROID_HOME
+      mv $ANDROID_HOME/cmdline-tools $ANDROID_HOME/cmdline-tools-latest
+      yes | $ANDROID_HOME/cmdline-tools-latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --licenses
+      yes | $ANDROID_HOME/cmdline-tools-latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-16" "system-images;android-16;default;x86" "emulator"
+    displayName: 'Install Android SDK components'
+
+  - script: |
+      echo "Creating Android Virtual Device (AVD)..."
+      echo "no" | $ANDROID_HOME/cmdline-tools-latest/bin/avdmanager create avd -n test-emulator -k "system-images;android-16;default;x86" --device "pixel"
+    displayName: 'Create AVD'
+
+  - script: |
+      echo "Starting emulator in background..."
+      $ANDROID_HOME/emulator/emulator -avd test-emulator -no-window -no-audio -no-boot-anim &
+      $ANDROID_HOME/platform-tools/adb wait-for-device
+      $ANDROID_HOME/platform-tools/adb shell input keyevent 82
+    displayName: 'Start emulator'
+
+  - script: adb devices
+    displayName: 'Verify connected devices'
+
+  - script: |
+      echo "Installing dependencies..."
+      npm install
+      npm install -g appium
+      appium driver install uiautomator2
+    displayName: 'Install npm dependencies and Appium'
+
+  - script: |
+      echo "Installing APK on emulator..."
+      adb install -r cypress/app/fleonidasv23.0-QA.apk
+    displayName: 'Install APK'
+
+  - script: |
+      echo "Starting Appium server in background..."
+      appium --log-level error &
+      sleep 10
+      echo "Running WebDriverIO tests..."
+      npx wdio run wdio.conf.js --suite all
+    displayName: 'Run mobile tests'
+
+  - script: |
+      echo "Generating Allure report..."
+      npm run report:allure
+    displayName: 'Generate Allure Report'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: 'allure-report'
+      artifact: 'AllureReport'
+    condition: succeededOrFailed()
+    displayName: 'Publish Allure Report'
